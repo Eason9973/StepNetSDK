@@ -351,20 +351,8 @@ namespace StepVR {
 			//¶¯²¶×ó½Å0x0D
 			//¶¯²¶ÓÒ½Å0x0E
 
-			NodeID_LeftWrist = 1,
-			NodeID_RightWrist = 2,
-			NodeID_LeftAnkle = 3,
-			NodeID_RightAnkle = 4,
-			NodeID_Neck = 5,
-			NodeID_LeftUpperArm = 6,
-			NodeID_RightUpperArm = 7,
-			NodeID_Head = 8,
-			NodeID_Weapon = 9,
-			NodeID_Back = 10,
-			NodeID_McpLeftHand=11,
-			NodeID_McpRightHand=12,
-			NodeID_McpLeftFoot=13,
-			NodeID_McpRightFoot=14
+            NodeID_Weapon = 4,
+			NodeID_Head = 6,
 		};
 
 		/**
