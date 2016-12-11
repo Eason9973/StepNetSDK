@@ -75,7 +75,7 @@ bool render = true;
 bool showText = true;
 
 // Used for converting NatNet data to the proper units.
-float unitConversion = 1.0f;
+float unitConversion = 1000.0f;
 
 // World Up Axis (default to Y)
 int upAxis = 1; // 
