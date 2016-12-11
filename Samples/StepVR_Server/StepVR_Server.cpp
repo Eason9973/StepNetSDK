@@ -239,7 +239,7 @@ int CreateServer(int iConnectionType)
             break;
         }
     }
-    strcpy(szIPAddress, "127.0.0.1");
+    //strcpy(szIPAddress, "127.0.0.1");
     
     // Initialize NatNet server with first detected ip address - use NatNet default port assignments
     int retCode = theServer->Initialize(szIPAddress);
@@ -447,15 +447,15 @@ void FreeDescription(sDataDescriptions* pDescription)
 // Build frame of MocapData
 void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData* pOutFrame)
 {
-    //----------------------------------
-    //for (int i = 0; i < 1; i++)	{
+    StepVR::SingleNode::NodeID nodeID = StepVR::SingleNode::NodeID_Head;
+
     StepVR::Frame frame = manager->GetFrame();
     StepVR::Frame* frame2;
     frame2 = &frame;
     StepVR::SingleNode positionframe = frame.GetSingleNode();
-    StepVR::Vector3f v3 = positionframe.GetPosition(StepVR::SingleNode::NodeID_Head);
-    StepVR::Vector4f v4 = positionframe.GetQuaternion(StepVR::SingleNode::NodeID_Head);
-    printf("F%d \tpos: [%.4f %.4f %.4f], ori: [%.3f %.3f %.3f %.3f] \n", counter3++, v3.x, v3.y, v3.z, v4.x, v4.y, v4.z, v4.w);
+    StepVR::Vector3f v3 = positionframe.GetPosition(nodeID);
+    StepVR::Vector4f v4 = positionframe.GetQuaternion(nodeID);
+    printf("F%d, node:%d, pos:[%.4f %.4f %.4f], ori:[%.3f %.3f %.3f %.3f] \n", counter3++, nodeID, v3.x, v3.y, v3.z, v4.x, v4.y, v4.z, v4.w);
 
     rd_p[0] = v3.x;
     rd_p[1] = v3.y;

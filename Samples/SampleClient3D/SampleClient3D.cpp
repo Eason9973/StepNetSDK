@@ -210,12 +210,20 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
     // Make a good guess as to the IP address of our NatNet server.
     in_addr MyAddress[10];
     int nAddresses = NATUtils::GetLocalIPAddresses((unsigned long *)&MyAddress, 10);
-    if (nAddresses > 0)
+    for (int i = 0; i < nAddresses; i++)
     {
-        IPAddress[0] = MyAddress[0].S_un.S_un_b.s_b1;
-        IPAddress[1] = MyAddress[0].S_un.S_un_b.s_b2;
-        IPAddress[2] = MyAddress[0].S_un.S_un_b.s_b3;
-        IPAddress[3] = MyAddress[0].S_un.S_un_b.s_b4;
+        //sprintf(IPAddress, "%d.%d.%d.%d", MyAddress[i].S_un.S_un_b.s_b1, MyAddress[i].S_un.S_un_b.s_b2, MyAddress[i].S_un.S_un_b.s_b3, MyAddress[i].S_un.S_un_b.s_b4);
+        // select first
+        if (MyAddress[i].S_un.S_un_b.s_b1 == 192)
+        {
+            IPAddress[0] = MyAddress[i].S_un.S_un_b.s_b1;
+            IPAddress[1] = MyAddress[i].S_un.S_un_b.s_b2;
+            IPAddress[2] = MyAddress[i].S_un.S_un_b.s_b3;    
+            IPAddress[3] = MyAddress[i].S_un.S_un_b.s_b4;
+            //sprintf(IPAddress, "%d.%d.%d.%d", MyAddress[i].S_un.S_un_b.s_b1, MyAddress[i].S_un.S_un_b.s_b2, MyAddress[i].S_un.S_un_b.s_b3, MyAddress[i].S_un.S_un_b.s_b4);
+            //printf("Valid IP Address: %s\n", IPAddress);
+            break;
+        }
     }
 
     // schedule to render on UI thread every 30 milliseconds
@@ -483,6 +491,7 @@ void RenderOGLScene()
         x *= unitConversion;
         y *= unitConversion;
         z *= unitConversion;
+
 
         // RigidBody orientation
         GLfloat qx, qy, qz, qw;
