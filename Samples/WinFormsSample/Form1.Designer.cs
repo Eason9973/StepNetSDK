@@ -1,4 +1,4 @@
-namespace WinFormTestApp
+﻿namespace WinFormTestApp
 {
     partial class Form1
     {
@@ -64,6 +64,7 @@ namespace WinFormTestApp
             this.TimelinePlayButton = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.PollCheckBox = new System.Windows.Forms.CheckBox();
             this.RecordDataButton = new System.Windows.Forms.CheckBox();
             this.DroppedFrameCountLabel = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
@@ -89,7 +90,6 @@ namespace WinFormTestApp
             this.SetRecordingTakeButton = new System.Windows.Forms.Button();
             this.RecordingTakeNameText = new System.Windows.Forms.TextBox();
             this.EditModeButton = new System.Windows.Forms.Button();
-            this.PollCheckBox = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
@@ -122,13 +122,13 @@ namespace WinFormTestApp
             this.Pitch,
             this.Roll});
             this.dataGridView1.EnableHeadersVisualStyles = false;
-            this.dataGridView1.Location = new System.Drawing.Point(12, 12);
+            this.dataGridView1.Location = new System.Drawing.Point(12, 11);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.ReadOnly = true;
             this.dataGridView1.RowHeadersVisible = false;
             this.dataGridView1.RowTemplate.ReadOnly = true;
             this.dataGridView1.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.CellSelect;
-            this.dataGridView1.Size = new System.Drawing.Size(560, 429);
+            this.dataGridView1.Size = new System.Drawing.Size(560, 396);
             this.dataGridView1.TabIndex = 1;
             // 
             // ID
@@ -218,9 +218,9 @@ namespace WinFormTestApp
             this.listView1.ContextMenuStrip = this.contextMenuStrip1;
             this.listView1.GridLines = true;
             this.listView1.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.listView1.Location = new System.Drawing.Point(578, 261);
+            this.listView1.Location = new System.Drawing.Point(578, 241);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(363, 180);
+            this.listView1.Size = new System.Drawing.Size(363, 166);
             this.listView1.TabIndex = 3;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -241,13 +241,13 @@ namespace WinFormTestApp
             this.menuClear,
             this.menuPause});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(106, 48);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(111, 48);
             this.contextMenuStrip1.Opening += new System.ComponentModel.CancelEventHandler(this.contextMenuStrip1_Opening);
             // 
             // menuClear
             // 
             this.menuClear.Name = "menuClear";
-            this.menuClear.Size = new System.Drawing.Size(105, 22);
+            this.menuClear.Size = new System.Drawing.Size(110, 22);
             this.menuClear.Text = "Clear";
             this.menuClear.Click += new System.EventHandler(this.menuClear_Click);
             // 
@@ -255,7 +255,7 @@ namespace WinFormTestApp
             // 
             this.menuPause.CheckOnClick = true;
             this.menuPause.Name = "menuPause";
-            this.menuPause.Size = new System.Drawing.Size(105, 22);
+            this.menuPause.Size = new System.Drawing.Size(110, 22);
             this.menuPause.Text = "Pause";
             this.menuPause.Click += new System.EventHandler(this.menuPause_Click);
             // 
@@ -264,9 +264,9 @@ namespace WinFormTestApp
             this.checkBoxConnect.Appearance = System.Windows.Forms.Appearance.Button;
             this.checkBoxConnect.FlatAppearance.CheckedBackColor = System.Drawing.Color.Red;
             this.checkBoxConnect.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-            this.checkBoxConnect.Location = new System.Drawing.Point(12, 102);
+            this.checkBoxConnect.Location = new System.Drawing.Point(12, 94);
             this.checkBoxConnect.Name = "checkBoxConnect";
-            this.checkBoxConnect.Size = new System.Drawing.Size(80, 23);
+            this.checkBoxConnect.Size = new System.Drawing.Size(80, 21);
             this.checkBoxConnect.TabIndex = 5;
             this.checkBoxConnect.Text = "Connect";
             this.checkBoxConnect.UseVisualStyleBackColor = true;
@@ -274,9 +274,9 @@ namespace WinFormTestApp
             // 
             // buttonGetDataDescriptions
             // 
-            this.buttonGetDataDescriptions.Location = new System.Drawing.Point(110, 103);
+            this.buttonGetDataDescriptions.Location = new System.Drawing.Point(110, 95);
             this.buttonGetDataDescriptions.Name = "buttonGetDataDescriptions";
-            this.buttonGetDataDescriptions.Size = new System.Drawing.Size(122, 23);
+            this.buttonGetDataDescriptions.Size = new System.Drawing.Size(122, 21);
             this.buttonGetDataDescriptions.TabIndex = 11;
             this.buttonGetDataDescriptions.Text = "Get Data Descriptions";
             this.buttonGetDataDescriptions.UseVisualStyleBackColor = true;
@@ -314,7 +314,7 @@ namespace WinFormTestApp
             legend1.Position.X = 84.04308F;
             legend1.Position.Y = 4F;
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(12, 447);
+            this.chart1.Location = new System.Drawing.Point(12, 413);
             this.chart1.Name = "chart1";
             series1.ChartArea = "ChartArea1";
             series1.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.FastLine;
@@ -327,12 +327,12 @@ namespace WinFormTestApp
             series1.MarkerStyle = System.Windows.Forms.DataVisualization.Charting.MarkerStyle.Circle;
             series1.Name = "Series1";
             this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(929, 340);
+            this.chart1.Size = new System.Drawing.Size(929, 314);
             this.chart1.TabIndex = 12;
             this.chart1.Text = "chart1";
             title1.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            title1.Name = "NatNetData";
-            title1.Text = "NatNet Demo";
+            title1.Name = "StepVRData";
+            title1.Text = "StepVR Demo";
             title1.TextStyle = System.Windows.Forms.DataVisualization.Charting.TextStyle.Shadow;
             this.chart1.Titles.Add(title1);
             // 
@@ -344,17 +344,17 @@ namespace WinFormTestApp
             this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.label1.Location = new System.Drawing.Point(578, 237);
+            this.label1.Location = new System.Drawing.Point(578, 219);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(363, 21);
+            this.label1.Size = new System.Drawing.Size(363, 20);
             this.label1.TabIndex = 13;
             this.label1.Text = "Messages";
             // 
             // RecordButton
             // 
-            this.RecordButton.Location = new System.Drawing.Point(11, 69);
+            this.RecordButton.Location = new System.Drawing.Point(11, 64);
             this.RecordButton.Name = "RecordButton";
-            this.RecordButton.Size = new System.Drawing.Size(99, 23);
+            this.RecordButton.Size = new System.Drawing.Size(99, 21);
             this.RecordButton.TabIndex = 16;
             this.RecordButton.Text = "Record";
             this.RecordButton.UseVisualStyleBackColor = true;
@@ -362,9 +362,9 @@ namespace WinFormTestApp
             // 
             // TimelineStopButton
             // 
-            this.TimelineStopButton.Location = new System.Drawing.Point(122, 131);
+            this.TimelineStopButton.Location = new System.Drawing.Point(122, 121);
             this.TimelineStopButton.Name = "TimelineStopButton";
-            this.TimelineStopButton.Size = new System.Drawing.Size(99, 23);
+            this.TimelineStopButton.Size = new System.Drawing.Size(99, 21);
             this.TimelineStopButton.TabIndex = 17;
             this.TimelineStopButton.Text = "Timeline Stop";
             this.TimelineStopButton.UseVisualStyleBackColor = true;
@@ -372,9 +372,9 @@ namespace WinFormTestApp
             // 
             // LiveModeButton
             // 
-            this.LiveModeButton.Location = new System.Drawing.Point(11, 100);
+            this.LiveModeButton.Location = new System.Drawing.Point(11, 92);
             this.LiveModeButton.Name = "LiveModeButton";
-            this.LiveModeButton.Size = new System.Drawing.Size(99, 23);
+            this.LiveModeButton.Size = new System.Drawing.Size(99, 21);
             this.LiveModeButton.TabIndex = 18;
             this.LiveModeButton.Text = "Live Mode";
             this.LiveModeButton.UseVisualStyleBackColor = true;
@@ -382,9 +382,9 @@ namespace WinFormTestApp
             // 
             // TimelinePlayButton
             // 
-            this.TimelinePlayButton.Location = new System.Drawing.Point(11, 131);
+            this.TimelinePlayButton.Location = new System.Drawing.Point(11, 121);
             this.TimelinePlayButton.Name = "TimelinePlayButton";
-            this.TimelinePlayButton.Size = new System.Drawing.Size(99, 23);
+            this.TimelinePlayButton.Size = new System.Drawing.Size(99, 21);
             this.TimelinePlayButton.TabIndex = 20;
             this.TimelinePlayButton.Text = "Timeline Play";
             this.TimelinePlayButton.UseVisualStyleBackColor = true;
@@ -396,10 +396,10 @@ namespace WinFormTestApp
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(578, 12);
+            this.tabControl1.Location = new System.Drawing.Point(578, 11);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(363, 222);
+            this.tabControl1.Size = new System.Drawing.Size(363, 205);
             this.tabControl1.TabIndex = 21;
             // 
             // tabPage1
@@ -424,19 +424,30 @@ namespace WinFormTestApp
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(355, 196);
+            this.tabPage1.Size = new System.Drawing.Size(355, 179);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Connect";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // PollCheckBox
+            // 
+            this.PollCheckBox.AutoSize = true;
+            this.PollCheckBox.Location = new System.Drawing.Point(247, 67);
+            this.PollCheckBox.Name = "PollCheckBox";
+            this.PollCheckBox.Size = new System.Drawing.Size(48, 16);
+            this.PollCheckBox.TabIndex = 25;
+            this.PollCheckBox.Text = "Poll";
+            this.PollCheckBox.UseVisualStyleBackColor = true;
+            this.PollCheckBox.CheckedChanged += new System.EventHandler(this.PollCheckBox_CheckedChanged);
             // 
             // RecordDataButton
             // 
             this.RecordDataButton.Appearance = System.Windows.Forms.Appearance.Button;
             this.RecordDataButton.FlatAppearance.CheckedBackColor = System.Drawing.Color.Red;
             this.RecordDataButton.FlatAppearance.MouseDownBackColor = System.Drawing.Color.White;
-            this.RecordDataButton.Location = new System.Drawing.Point(247, 103);
+            this.RecordDataButton.Location = new System.Drawing.Point(247, 95);
             this.RecordDataButton.Name = "RecordDataButton";
-            this.RecordDataButton.Size = new System.Drawing.Size(80, 23);
+            this.RecordDataButton.Size = new System.Drawing.Size(80, 21);
             this.RecordDataButton.TabIndex = 24;
             this.RecordDataButton.Text = "Record";
             this.RecordDataButton.UseVisualStyleBackColor = true;
@@ -445,106 +456,106 @@ namespace WinFormTestApp
             // DroppedFrameCountLabel
             // 
             this.DroppedFrameCountLabel.AutoSize = true;
-            this.DroppedFrameCountLabel.Location = new System.Drawing.Point(100, 166);
+            this.DroppedFrameCountLabel.Location = new System.Drawing.Point(100, 153);
             this.DroppedFrameCountLabel.Name = "DroppedFrameCountLabel";
-            this.DroppedFrameCountLabel.Size = new System.Drawing.Size(43, 13);
+            this.DroppedFrameCountLabel.Size = new System.Drawing.Size(41, 12);
             this.DroppedFrameCountLabel.TabIndex = 23;
             this.DroppedFrameCountLabel.Text = "<none>";
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(9, 166);
+            this.label6.Location = new System.Drawing.Point(9, 153);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(94, 13);
+            this.label6.Size = new System.Drawing.Size(107, 12);
             this.label6.TabIndex = 22;
             this.label6.Text = "Dropped Frames : ";
             // 
             // TimecodeValue
             // 
             this.TimecodeValue.AutoSize = true;
-            this.TimecodeValue.Location = new System.Drawing.Point(255, 141);
+            this.TimecodeValue.Location = new System.Drawing.Point(255, 130);
             this.TimecodeValue.Name = "TimecodeValue";
-            this.TimecodeValue.Size = new System.Drawing.Size(43, 13);
+            this.TimecodeValue.Size = new System.Drawing.Size(41, 12);
             this.TimecodeValue.TabIndex = 21;
             this.TimecodeValue.Text = "<none>";
             // 
             // TimestampValue
             // 
             this.TimestampValue.AutoSize = true;
-            this.TimestampValue.Location = new System.Drawing.Point(100, 141);
+            this.TimestampValue.Location = new System.Drawing.Point(100, 130);
             this.TimestampValue.Name = "TimestampValue";
-            this.TimestampValue.Size = new System.Drawing.Size(43, 13);
+            this.TimestampValue.Size = new System.Drawing.Size(41, 12);
             this.TimestampValue.TabIndex = 20;
             this.TimestampValue.Text = "<none>";
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(196, 141);
+            this.label4.Location = new System.Drawing.Point(196, 130);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(60, 13);
+            this.label4.Size = new System.Drawing.Size(65, 12);
             this.label4.TabIndex = 19;
             this.label4.Text = "Timecode :";
             // 
             // TimestampLabel
             // 
             this.TimestampLabel.AutoSize = true;
-            this.TimestampLabel.Location = new System.Drawing.Point(9, 141);
+            this.TimestampLabel.Location = new System.Drawing.Point(9, 130);
             this.TimestampLabel.Name = "TimestampLabel";
-            this.TimestampLabel.Size = new System.Drawing.Size(67, 13);
+            this.TimestampLabel.Size = new System.Drawing.Size(77, 12);
             this.TimestampLabel.TabIndex = 18;
             this.TimestampLabel.Text = "Timestamp : ";
             // 
             // comboBoxLocal
             // 
             this.comboBoxLocal.FormattingEnabled = true;
-            this.comboBoxLocal.Location = new System.Drawing.Point(58, 15);
+            this.comboBoxLocal.Location = new System.Drawing.Point(58, 14);
             this.comboBoxLocal.Name = "comboBoxLocal";
-            this.comboBoxLocal.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxLocal.Size = new System.Drawing.Size(121, 20);
             this.comboBoxLocal.TabIndex = 17;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(9, 75);
+            this.label3.Location = new System.Drawing.Point(9, 69);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(31, 13);
+            this.label3.Size = new System.Drawing.Size(29, 12);
             this.label3.TabIndex = 16;
             this.label3.Text = "Type";
             // 
             // Local
             // 
             this.Local.AutoSize = true;
-            this.Local.Location = new System.Drawing.Point(9, 18);
+            this.Local.Location = new System.Drawing.Point(9, 17);
             this.Local.Name = "Local";
-            this.Local.Size = new System.Drawing.Size(33, 13);
+            this.Local.Size = new System.Drawing.Size(35, 12);
             this.Local.TabIndex = 9;
             this.Local.Text = "Local";
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(9, 48);
+            this.label2.Location = new System.Drawing.Point(9, 44);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(38, 13);
+            this.label2.Size = new System.Drawing.Size(41, 12);
             this.label2.TabIndex = 10;
             this.label2.Text = "Server";
             // 
             // textBoxServer
             // 
-            this.textBoxServer.Location = new System.Drawing.Point(58, 45);
+            this.textBoxServer.Location = new System.Drawing.Point(58, 42);
             this.textBoxServer.Name = "textBoxServer";
-            this.textBoxServer.Size = new System.Drawing.Size(121, 20);
+            this.textBoxServer.Size = new System.Drawing.Size(121, 21);
             this.textBoxServer.TabIndex = 8;
             this.textBoxServer.Text = "127.0.0.1";
             // 
             // RadioUnicast
             // 
             this.RadioUnicast.AutoSize = true;
-            this.RadioUnicast.Location = new System.Drawing.Point(130, 73);
+            this.RadioUnicast.Location = new System.Drawing.Point(130, 67);
             this.RadioUnicast.Name = "RadioUnicast";
-            this.RadioUnicast.Size = new System.Drawing.Size(61, 17);
+            this.RadioUnicast.Size = new System.Drawing.Size(65, 16);
             this.RadioUnicast.TabIndex = 15;
             this.RadioUnicast.Text = "Unicast";
             this.RadioUnicast.UseVisualStyleBackColor = true;
@@ -554,9 +565,9 @@ namespace WinFormTestApp
             // 
             this.RadioMulticast.AutoSize = true;
             this.RadioMulticast.Checked = true;
-            this.RadioMulticast.Location = new System.Drawing.Point(58, 73);
+            this.RadioMulticast.Location = new System.Drawing.Point(58, 67);
             this.RadioMulticast.Name = "RadioMulticast";
-            this.RadioMulticast.Size = new System.Drawing.Size(67, 17);
+            this.RadioMulticast.Size = new System.Drawing.Size(77, 16);
             this.RadioMulticast.TabIndex = 14;
             this.RadioMulticast.TabStop = true;
             this.RadioMulticast.Text = "Multicast";
@@ -582,16 +593,16 @@ namespace WinFormTestApp
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(355, 196);
+            this.tabPage2.Size = new System.Drawing.Size(355, 179);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Commands";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // GetModeButton
             // 
-            this.GetModeButton.Location = new System.Drawing.Point(228, 160);
+            this.GetModeButton.Location = new System.Drawing.Point(228, 148);
             this.GetModeButton.Name = "GetModeButton";
-            this.GetModeButton.Size = new System.Drawing.Size(98, 23);
+            this.GetModeButton.Size = new System.Drawing.Size(98, 21);
             this.GetModeButton.TabIndex = 30;
             this.GetModeButton.Text = "Capture Mode?";
             this.GetModeButton.UseVisualStyleBackColor = true;
@@ -599,9 +610,9 @@ namespace WinFormTestApp
             // 
             // GetTakeRangeButton
             // 
-            this.GetTakeRangeButton.Location = new System.Drawing.Point(122, 160);
+            this.GetTakeRangeButton.Location = new System.Drawing.Point(122, 148);
             this.GetTakeRangeButton.Name = "GetTakeRangeButton";
-            this.GetTakeRangeButton.Size = new System.Drawing.Size(99, 23);
+            this.GetTakeRangeButton.Size = new System.Drawing.Size(99, 21);
             this.GetTakeRangeButton.TabIndex = 29;
             this.GetTakeRangeButton.Text = "Get Range";
             this.GetTakeRangeButton.UseVisualStyleBackColor = true;
@@ -609,9 +620,9 @@ namespace WinFormTestApp
             // 
             // TestButton
             // 
-            this.TestButton.Location = new System.Drawing.Point(227, 131);
+            this.TestButton.Location = new System.Drawing.Point(227, 121);
             this.TestButton.Name = "TestButton";
-            this.TestButton.Size = new System.Drawing.Size(99, 23);
+            this.TestButton.Size = new System.Drawing.Size(99, 21);
             this.TestButton.TabIndex = 28;
             this.TestButton.Text = "Test";
             this.TestButton.UseVisualStyleBackColor = true;
@@ -619,9 +630,9 @@ namespace WinFormTestApp
             // 
             // GetLastFrameOfDataButton
             // 
-            this.GetLastFrameOfDataButton.Location = new System.Drawing.Point(11, 160);
+            this.GetLastFrameOfDataButton.Location = new System.Drawing.Point(11, 148);
             this.GetLastFrameOfDataButton.Name = "GetLastFrameOfDataButton";
-            this.GetLastFrameOfDataButton.Size = new System.Drawing.Size(99, 23);
+            this.GetLastFrameOfDataButton.Size = new System.Drawing.Size(99, 21);
             this.GetLastFrameOfDataButton.TabIndex = 27;
             this.GetLastFrameOfDataButton.Text = "Get Frame";
             this.GetLastFrameOfDataButton.UseVisualStyleBackColor = true;
@@ -629,9 +640,9 @@ namespace WinFormTestApp
             // 
             // SetPlaybackTakeButton
             // 
-            this.SetPlaybackTakeButton.Location = new System.Drawing.Point(11, 39);
+            this.SetPlaybackTakeButton.Location = new System.Drawing.Point(11, 36);
             this.SetPlaybackTakeButton.Name = "SetPlaybackTakeButton";
-            this.SetPlaybackTakeButton.Size = new System.Drawing.Size(171, 23);
+            this.SetPlaybackTakeButton.Size = new System.Drawing.Size(171, 21);
             this.SetPlaybackTakeButton.TabIndex = 26;
             this.SetPlaybackTakeButton.Text = "Set Playback Take Name";
             this.SetPlaybackTakeButton.UseVisualStyleBackColor = true;
@@ -639,16 +650,16 @@ namespace WinFormTestApp
             // 
             // PlaybackTakeNameText
             // 
-            this.PlaybackTakeNameText.Location = new System.Drawing.Point(188, 41);
+            this.PlaybackTakeNameText.Location = new System.Drawing.Point(188, 38);
             this.PlaybackTakeNameText.Name = "PlaybackTakeNameText";
-            this.PlaybackTakeNameText.Size = new System.Drawing.Size(161, 20);
+            this.PlaybackTakeNameText.Size = new System.Drawing.Size(161, 21);
             this.PlaybackTakeNameText.TabIndex = 25;
             // 
             // StopRecordButton
             // 
-            this.StopRecordButton.Location = new System.Drawing.Point(122, 69);
+            this.StopRecordButton.Location = new System.Drawing.Point(122, 64);
             this.StopRecordButton.Name = "StopRecordButton";
-            this.StopRecordButton.Size = new System.Drawing.Size(99, 23);
+            this.StopRecordButton.Size = new System.Drawing.Size(99, 21);
             this.StopRecordButton.TabIndex = 24;
             this.StopRecordButton.Text = "Stop Record";
             this.StopRecordButton.UseVisualStyleBackColor = true;
@@ -656,9 +667,9 @@ namespace WinFormTestApp
             // 
             // SetRecordingTakeButton
             // 
-            this.SetRecordingTakeButton.Location = new System.Drawing.Point(11, 10);
+            this.SetRecordingTakeButton.Location = new System.Drawing.Point(11, 9);
             this.SetRecordingTakeButton.Name = "SetRecordingTakeButton";
-            this.SetRecordingTakeButton.Size = new System.Drawing.Size(171, 23);
+            this.SetRecordingTakeButton.Size = new System.Drawing.Size(171, 21);
             this.SetRecordingTakeButton.TabIndex = 23;
             this.SetRecordingTakeButton.Text = "Set Recording Take Name";
             this.SetRecordingTakeButton.UseVisualStyleBackColor = true;
@@ -666,45 +677,34 @@ namespace WinFormTestApp
             // 
             // RecordingTakeNameText
             // 
-            this.RecordingTakeNameText.Location = new System.Drawing.Point(188, 12);
+            this.RecordingTakeNameText.Location = new System.Drawing.Point(188, 11);
             this.RecordingTakeNameText.Name = "RecordingTakeNameText";
-            this.RecordingTakeNameText.Size = new System.Drawing.Size(161, 20);
+            this.RecordingTakeNameText.Size = new System.Drawing.Size(161, 21);
             this.RecordingTakeNameText.TabIndex = 22;
             // 
             // EditModeButton
             // 
-            this.EditModeButton.Location = new System.Drawing.Point(122, 100);
+            this.EditModeButton.Location = new System.Drawing.Point(122, 92);
             this.EditModeButton.Name = "EditModeButton";
-            this.EditModeButton.Size = new System.Drawing.Size(99, 23);
+            this.EditModeButton.Size = new System.Drawing.Size(99, 21);
             this.EditModeButton.TabIndex = 19;
             this.EditModeButton.Text = "Edit Mode";
             this.EditModeButton.UseVisualStyleBackColor = true;
             this.EditModeButton.Click += new System.EventHandler(this.EditModeButton_Click);
             // 
-            // PollCheckBox
-            // 
-            this.PollCheckBox.AutoSize = true;
-            this.PollCheckBox.Location = new System.Drawing.Point(247, 73);
-            this.PollCheckBox.Name = "PollCheckBox";
-            this.PollCheckBox.Size = new System.Drawing.Size(43, 17);
-            this.PollCheckBox.TabIndex = 25;
-            this.PollCheckBox.Text = "Poll";
-            this.PollCheckBox.UseVisualStyleBackColor = true;
-            this.PollCheckBox.CheckedChanged += new System.EventHandler(this.PollCheckBox_CheckedChanged);
-            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gainsboro;
-            this.ClientSize = new System.Drawing.Size(953, 799);
+            this.ClientSize = new System.Drawing.Size(953, 738);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.chart1);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.dataGridView1);
             this.Name = "Form1";
-            this.Text = "NatNet Managed Client Sample";
+            this.Text = "Managed Client Sample";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();

@@ -1,5 +1,5 @@
-//=============================================================================
-// Copyright � 2010 NaturalPoint, Inc. All Rights Reserved.
+﻿//=============================================================================
+// Copyright © 2010 NaturalPoint, Inc. All Rights Reserved.
 // 
 // This software is provided by the copyright holders and contributors "as is" and
 // any express or implied warranties, including, but not limited to, the implied
@@ -48,7 +48,7 @@ int HiResSleep(int msecs);
 
 // callbacks
 void __cdecl MessageHandler(int msgType, char* msg);
-int __cdecl RequestHandler(sPacket* pPacketIn, sPacket* pPacketOut,void* pUserData);
+int __cdecl RequestHandler(sPacket* pPacketIn, sPacket* pPacketOut, void* pUserData);
 
 // playing thread
 int StartPlayingThread();
@@ -60,7 +60,7 @@ sDataDescriptions descriptions; 				// Describes what is sent (Marker sets, rigi
 long g_lCurrentFrame = 0;
 bool g_bPlaying = false;
 DWORD PlayingThread_ID = NULL;
-HANDLE PlayingThread_Handle = NULL;	
+HANDLE PlayingThread_Handle = NULL;
 int counter = 0;
 int counter2 = 0;
 float fCounter = 0.0f;
@@ -80,7 +80,7 @@ int _tmain(int argc, _TCHAR* argv[])
     int iConnectionType = ConnectionType_Multicast;
     //int iConnectionType = ConnectionType_Unicast;
     int iResult = CreateServer(iConnectionType);
-    if(iResult != ErrorCode_OK)
+    if (iResult != ErrorCode_OK)
     {
         printf("Error initializing server.  See log for details.  Exiting");
         return 1;
@@ -90,67 +90,67 @@ int _tmain(int argc, _TCHAR* argv[])
     BuildDescription(&descriptions);
 
     // OK! Ready to stream data.  Listen for request from clients (RequestHandler())
-	printf("\n\nCommands:\nn\tnext frame\ns\tstream frames\nr\treset server\nq\tquit\n\r\tmulticast\nu\tunicast\n\n");
-	bool bExit = false;
-	while(int c =_getch())
-	{
-		switch(c)
-		{
-			case 'n':							// next frame
-                {
-				sFrameOfMocapData frame;
-				BuildFrame(g_lCurrentFrame++, &descriptions, &frame);
-				SendFrame(&frame);
-				FreeFrame(&frame);
-                }
-				break;
-			case 'q':                           // quit
-				bExit = true;		
-				break;
-            case 's':							// play continuously
-                g_lCurrentFrame = 0;
-                if(g_bPlaying)
-                    StopPlayingThread();
-                else
-                    StartPlayingThread();
-                break;
-            case 'r':	                        // reset server
-                resetServer();
-                break;
-            case 'm':	                        // change to multicast
-                iResult = CreateServer(ConnectionType_Multicast);
-                if(iResult == ErrorCode_OK)
-                    printf("Server connection type changed to Multicast.\n\n");
-                else
-                    printf("Error changing server connection type to Multicast.\n\n");
-                break;
-            case 'u':	                        // change to unicast
-                iResult = CreateServer(ConnectionType_Unicast);
-                if(iResult == ErrorCode_OK)
-                    printf("Server connection type changed to Unicast.\n\n");
-                else
-                    printf("Error changing server connection type to Unicast.\n\n");
-                break;
+    printf("\n\nCommands:\nn\tnext frame\ns\tstream frames\nr\treset server\nq\tquit\n\r\tmulticast\nu\tunicast\n\n");
+    bool bExit = false;
+    while (int c = _getch())
+    {
+        switch (c)
+        {
+        case 'n':							// next frame
+        {
+            sFrameOfMocapData frame;
+            BuildFrame(g_lCurrentFrame++, &descriptions, &frame);
+            SendFrame(&frame);
+            FreeFrame(&frame);
+        }
+        break;
+        case 'q':                           // quit
+            bExit = true;
+            break;
+        case 's':							// play continuously
+            g_lCurrentFrame = 0;
+            if (g_bPlaying)
+                StopPlayingThread();
+            else
+                StartPlayingThread();
+            break;
+        case 'r':	                        // reset server
+            resetServer();
+            break;
+        case 'm':	                        // change to multicast
+            iResult = CreateServer(ConnectionType_Multicast);
+            if (iResult == ErrorCode_OK)
+                printf("Server connection type changed to Multicast.\n\n");
+            else
+                printf("Error changing server connection type to Multicast.\n\n");
+            break;
+        case 'u':	                        // change to unicast
+            iResult = CreateServer(ConnectionType_Unicast);
+            if (iResult == ErrorCode_OK)
+                printf("Server connection type changed to Unicast.\n\n");
+            else
+                printf("Error changing server connection type to Unicast.\n\n");
+            break;
 
-			default:
-				break;
-		}
+        default:
+            break;
+        }
 
-		if(bExit)
-		{
-			theServer->Uninitialize();
-			FreeDescription(&descriptions);
-			break;
-		}
-	}
+        if (bExit)
+        {
+            theServer->Uninitialize();
+            FreeDescription(&descriptions);
+            break;
+        }
+    }
 
-	return ErrorCode_OK;
+    return ErrorCode_OK;
 }
 
 int CreateServer(int iConnectionType)
 {
     // release previous server
-    if(theServer)
+    if (theServer)
     {
         theServer->Uninitialize();
         delete theServer;
@@ -176,12 +176,12 @@ int CreateServer(int iConnectionType)
     char szIPAddress[128];
     in_addr MyAddress[10];
     int nAddresses = NATUtils::GetLocalIPAddresses2((unsigned long *)&MyAddress, 10);
-    if(nAddresses < 1)
+    if (nAddresses < 1)
     {
         printf("Unable to detect local network.  Exiting");
         return 1;
     }
-    for(int i=0; i < nAddresses; i++)
+    for (int i = 0; i < nAddresses; i++)
     {
         sprintf(szIPAddress, "%d.%d.%d.%d", MyAddress[i].S_un.S_un_b.s_b1, MyAddress[i].S_un.S_un_b.s_b2, MyAddress[i].S_un.S_un_b.s_b3, MyAddress[i].S_un.S_un_b.s_b4);
         printf("IP Address : %s\n", szIPAddress);
@@ -190,10 +190,11 @@ int CreateServer(int iConnectionType)
     sprintf(szIPAddress, "%d.%d.%d.%d", MyAddress[0].S_un.S_un_b.s_b1, MyAddress[0].S_un.S_un_b.s_b2, MyAddress[0].S_un.S_un_b.s_b3, MyAddress[0].S_un.S_un_b.s_b4);
 
     // Initialize NatNet server with first detected ip address - use NatNet default port assignments
-	int retCode = theServer->Initialize(szIPAddress);
+    sprintf(szIPAddress, "%d.%d.%d.%d", 127, 0, 0, 1);
+    int retCode = theServer->Initialize(szIPAddress);
     // to use a different port for commands and/or data:
     //int retCode = theServer->Initialize(szIPAddress, MyCommandPort, MyDataPort);
-    if(retCode != 0)
+    if (retCode != 0)
     {
         printf("Error initializing server.  See log for details.  Exiting");
         return 1;
@@ -211,7 +212,7 @@ int CreateServer(int iConnectionType)
     theServer->GetSocketInfo(szDataIP, &iDataPort, szCommandIP, &iCommandPort, szMulticastGroup, &iMulticastPort);
     printf("Command Socket  : %s:%d\n", szCommandIP, iCommandPort);
     printf("Data Socket     : %s:%d\n", szDataIP, iDataPort);
-    if(iConnectionType==ConnectionType_Multicast)
+    if (iConnectionType == ConnectionType_Multicast)
     {
         printf("Connection Type : Multicast\n");
         printf("Multicast Group : %s:%d\n", szMulticastGroup, iMulticastPort);
@@ -233,7 +234,7 @@ int CreateServer(int iConnectionType)
 //
 int __cdecl RequestHandler(sPacket* pPacketIn, sPacket* pPacketOut, void* pUserData)
 {
-	int iHandled = 1;	// handled
+    int iHandled = 1;	// handled
 
     switch (pPacketIn->iMessage)
     {
@@ -241,10 +242,10 @@ int __cdecl RequestHandler(sPacket* pPacketIn, sPacket* pPacketOut, void* pUserD
         printf("[SampleServer] received ping from Client.\n");
         printf("[SampleServer] Client App Name : %s\n", pPacketIn->Data.Sender.szName);
         printf("[SampleServer] Client App Version : %d.%d.%d.%d\n", pPacketIn->Data.Sender.Version[0],
-            pPacketIn->Data.Sender.Version[1],pPacketIn->Data.Sender.Version[2],pPacketIn->Data.Sender.Version[3]);
+            pPacketIn->Data.Sender.Version[1], pPacketIn->Data.Sender.Version[2], pPacketIn->Data.Sender.Version[3]);
         printf("[SampleServer] Client App NatNet Version : %d.%d.%d.%d\n", pPacketIn->Data.Sender.NatNetVersion[0],
-            pPacketIn->Data.Sender.NatNetVersion[1],pPacketIn->Data.Sender.NatNetVersion[2],pPacketIn->Data.Sender.NatNetVersion[3]);
-        
+            pPacketIn->Data.Sender.NatNetVersion[1], pPacketIn->Data.Sender.NatNetVersion[2], pPacketIn->Data.Sender.NatNetVersion[3]);
+
         // build server info packet
         strcpy(pPacketOut->Data.Sender.szName, "SimpleServer");
         pPacketOut->Data.Sender.Version[0] = 2;
@@ -255,21 +256,21 @@ int __cdecl RequestHandler(sPacket* pPacketIn, sPacket* pPacketOut, void* pUserD
         break;
 
     case NAT_REQUEST_MODELDEF:
-		printf("[SimpleServer] Received request for data descriptions.\n");
-		theServer->PacketizeDataDescriptions(&descriptions, pPacketOut);
+        printf("[SimpleServer] Received request for data descriptions.\n");
+        theServer->PacketizeDataDescriptions(&descriptions, pPacketOut);
         break;
 
-	case NAT_REQUEST_FRAMEOFDATA:
-		{
-		// note: Client does not typically poll for data, but we accomodate it here anyway
-		// note: need to return response on same thread as caller
-		printf("[SimpleServer] Received request for frame of data.\n");
-		sFrameOfMocapData frame;
-		BuildFrame(g_lCurrentFrame, &descriptions, &frame);
-		theServer->PacketizeFrameOfMocapData(&frame, pPacketOut);
-		FreeFrame(&frame);
-		}
-        break;
+    case NAT_REQUEST_FRAMEOFDATA:
+    {
+        // note: Client does not typically poll for data, but we accomodate it here anyway
+        // note: need to return response on same thread as caller
+        printf("[SimpleServer] Received request for frame of data.\n");
+        sFrameOfMocapData frame;
+        BuildFrame(g_lCurrentFrame, &descriptions, &frame);
+        theServer->PacketizeFrameOfMocapData(&frame, pPacketOut);
+        FreeFrame(&frame);
+    }
+    break;
 
     case NAT_REQUEST:
         printf("[SampleServer] Received request from Client: %s\n", pPacketIn->Data.szData);
@@ -285,11 +286,11 @@ int __cdecl RequestHandler(sPacket* pPacketIn, sPacket* pPacketOut, void* pUserD
     default:
         pPacketOut->iMessage = NAT_UNRECOGNIZED_REQUEST;
         pPacketOut->nDataBytes = 0;
-		iHandled = 0;
+        iHandled = 0;
         break;
     }
 
-	return iHandled; // 0 = not handled, 1 = handled;
+    return iHandled; // 0 = not handled, 1 = handled;
 }
 
 // Build a DataSet description (MarkerSets, RigiBodies, Skeletons).
@@ -300,26 +301,26 @@ void BuildDescription(sDataDescriptions* pDescription)
 
 #if STREAM_MARKERS
     // Marker Set Description
-	sMarkerSetDescription* pMarkerSetDescription = new sMarkerSetDescription();
-	strcpy(pMarkerSetDescription->szName, "Katie");
-	pMarkerSetDescription->nMarkers = 10;
-	pMarkerSetDescription->szMarkerNames = new char*[pMarkerSetDescription->nMarkers];
-	char szTemp[128];
-    for (int i=0; i < pMarkerSetDescription->nMarkers; i++)
-	{
-		sprintf(szTemp, "Marker %d", i);
-		pMarkerSetDescription->szMarkerNames[i] = new char[MAX_NAMELENGTH];
-		strcpy(pMarkerSetDescription->szMarkerNames[i], szTemp);
-	}
-	pDescription->arrDataDescriptions[index].type = Descriptor_MarkerSet;
-	pDescription->arrDataDescriptions[index].Data.MarkerSetDescription = pMarkerSetDescription;
+    sMarkerSetDescription* pMarkerSetDescription = new sMarkerSetDescription();
+    strcpy(pMarkerSetDescription->szName, "Katie");
+    pMarkerSetDescription->nMarkers = 10;
+    pMarkerSetDescription->szMarkerNames = new char*[pMarkerSetDescription->nMarkers];
+    char szTemp[128];
+    for (int i = 0; i < pMarkerSetDescription->nMarkers; i++)
+    {
+        sprintf(szTemp, "Marker %d", i);
+        pMarkerSetDescription->szMarkerNames[i] = new char[MAX_NAMELENGTH];
+        strcpy(pMarkerSetDescription->szMarkerNames[i], szTemp);
+    }
+    pDescription->arrDataDescriptions[index].type = Descriptor_MarkerSet;
+    pDescription->arrDataDescriptions[index].Data.MarkerSetDescription = pMarkerSetDescription;
     pDescription->nDataDescriptions++;
     index++;
 #endif
 
 #if STREAM_RBS
     // Rigid Body Description
-    for(int i=0; i < 20; i++)
+    for (int i = 0; i < 20; i++)
     {
         sRigidBodyDescription* pRigidBodyDescription = new sRigidBodyDescription();
         sprintf(pRigidBodyDescription->szName, "RigidBody %d", i);
@@ -337,13 +338,13 @@ void BuildDescription(sDataDescriptions* pDescription)
 
 #if STREAM_SKELETONS
     // Skeleton description
-    for(int i=0; i < 2; i++)
+    for (int i = 0; i < 2; i++)
     {
         sSkeletonDescription* pSkeletonDescription = new sSkeletonDescription();
         sprintf(pSkeletonDescription->szName, "Skeleton %d", i);
-        pSkeletonDescription->skeletonID = index*100;
+        pSkeletonDescription->skeletonID = index * 100;
         pSkeletonDescription->nRigidBodies = 5;
-        for(int j=0; j<pSkeletonDescription->nRigidBodies; j++)
+        for (int j = 0; j < pSkeletonDescription->nRigidBodies; j++)
         {
             int RBID = pSkeletonDescription->skeletonID + j;
             sprintf(pSkeletonDescription->RigidBodies[j].szName, "RB%d", RBID);
@@ -366,9 +367,9 @@ void BuildDescription(sDataDescriptions* pDescription)
 // Send DataSet description to Client
 void SendDescription(sDataDescriptions* pDescription)
 {
-	sPacket packet; 
-	theServer->PacketizeDataDescriptions(pDescription, &packet);
-	theServer->SendPacket(&packet);
+    sPacket packet;
+    theServer->PacketizeDataDescriptions(pDescription, &packet);
+    theServer->SendPacket(&packet);
 }
 
 // Release any memory we allocated for our example
@@ -377,59 +378,59 @@ void FreeDescription(sDataDescriptions* pDescription)
     /*
     for(int i=0; i< pDescription->nDataDescriptions; i++)
     {
-        if(pDescription->arrDataDescriptions[i].type == Descriptor_MarkerSet)
-        {
-            for(int i=0; i< pMarkerSetDescription->nMarkers; i++)
-            {
-                delete[] pMarkerSetDescription->szMarkerNames[i];
-            }
-            delete elete[] pMarkerSetDescription->szMarkerNames;
-            sMarkerSetDescription* pMarkerSetDescription = pDescription->arrDataDescriptions[0].Data.MarkerSetDescription;
-        }
-        else if(pDescription->arrDataDescriptions[i].type == Descriptor_RigidBody)
-        {
-        */
+    if(pDescription->arrDataDescriptions[i].type == Descriptor_MarkerSet)
+    {
+    for(int i=0; i< pMarkerSetDescription->nMarkers; i++)
+    {
+    delete[] pMarkerSetDescription->szMarkerNames[i];
+    }
+    delete elete[] pMarkerSetDescription->szMarkerNames;
+    sMarkerSetDescription* pMarkerSetDescription = pDescription->arrDataDescriptions[0].Data.MarkerSetDescription;
+    }
+    else if(pDescription->arrDataDescriptions[i].type == Descriptor_RigidBody)
+    {
+    */
 
 }
 
 // Build frame of MocapData
 void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData* pOutFrame)
-{	
-	if(!pModels)
-	{
-		printf("No models defined - nothing to send.\n");
-		return;
-	}
+{
+    if (!pModels)
+    {
+        printf("No models defined - nothing to send.\n");
+        return;
+    }
 
-	ZeroMemory(pOutFrame, sizeof(sFrameOfMocapData));
+    ZeroMemory(pOutFrame, sizeof(sFrameOfMocapData));
     pOutFrame->iFrame = FrameNumber;
     pOutFrame->fLatency = (float)GetTickCount();
     pOutFrame->nOtherMarkers = 0;
     pOutFrame->nMarkerSets = 0;
-	pOutFrame->nRigidBodies = 0;
-	pOutFrame->nLabeledMarkers = 0;
-	
-    for(int i=0; i < pModels->nDataDescriptions; i++)
+    pOutFrame->nRigidBodies = 0;
+    pOutFrame->nLabeledMarkers = 0;
+
+    for (int i = 0; i < pModels->nDataDescriptions; i++)
     {
 #if STREAM_MARKERS
         // MarkerSet data
-        if(pModels->arrDataDescriptions[i].type == Descriptor_MarkerSet)
+        if (pModels->arrDataDescriptions[i].type == Descriptor_MarkerSet)
         {
             // add marker data
             int index = pOutFrame->nMarkerSets;
-	        sMarkerSetDescription* pMS = pModels->arrDataDescriptions[i].Data.MarkerSetDescription;
-	        strcpy(pOutFrame->MocapData[index].szName, pMS->szName);
-	        pOutFrame->MocapData[index].nMarkers = pMS->nMarkers;
-	        pOutFrame->MocapData[index].Markers = new MarkerData[pOutFrame->MocapData[0].nMarkers];
-	        for(int iMarker=0; iMarker < pOutFrame->MocapData[index].nMarkers; iMarker++)
-	        {	    
+            sMarkerSetDescription* pMS = pModels->arrDataDescriptions[i].Data.MarkerSetDescription;
+            strcpy(pOutFrame->MocapData[index].szName, pMS->szName);
+            pOutFrame->MocapData[index].nMarkers = pMS->nMarkers;
+            pOutFrame->MocapData[index].Markers = new MarkerData[pOutFrame->MocapData[0].nMarkers];
+            for (int iMarker = 0; iMarker < pOutFrame->MocapData[index].nMarkers; iMarker++)
+            {
                 double rads = (double)counter * 3.14159265358979 / 180.0f;
-		        pOutFrame->MocapData[index].Markers[iMarker][0] = (float) sin(rads) + (10*iMarker);		// x
-		        pOutFrame->MocapData[index].Markers[iMarker][1] = (float) cos(rads) + (20*iMarker);		// y
-		        pOutFrame->MocapData[index].Markers[iMarker][2] = (float) tan(rads) + (30*iMarker);		// z
+                pOutFrame->MocapData[index].Markers[iMarker][0] = (float)sin(rads) + (10 * iMarker);		// x
+                pOutFrame->MocapData[index].Markers[iMarker][1] = (float)cos(rads) + (20 * iMarker);		// y
+                pOutFrame->MocapData[index].Markers[iMarker][2] = (float)tan(rads) + (30 * iMarker);		// z
                 counter++;
                 counter %= 360;
-	        }
+            }
             pOutFrame->nMarkerSets++;
 
         }
@@ -437,7 +438,7 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
 
 #if STREAM_RBS
         // RigidBody data
-        if(pModels->arrDataDescriptions[i].type == Descriptor_RigidBody)
+        if (pModels->arrDataDescriptions[i].type == Descriptor_RigidBody)
         {
             sRigidBodyDescription* pMS = pModels->arrDataDescriptions[i].Data.RigidBodyDescription;
             int index = pOutFrame->nRigidBodies;
@@ -445,28 +446,28 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
 
             pRB->ID = pMS->ID;
             double rads = (double)counter * 3.14159265358979 / 180.0f;
-            pRB->x = (float) sin(rads);
-            pRB->y = (float) cos(rads);
-            pRB->z = (float) tan(rads);
+            pRB->x = (float)sin(rads);
+            pRB->y = (float)cos(rads);
+            pRB->z = (float)tan(rads);
 
-			EulerAngles ea;
-			ea.x = (float) sin(rads);
-			ea.y = (float) cos(rads);
-			ea.z = (float) tan(rads);
-			ea.w = 0.0f;
-			Quat q = Eul_ToQuat(ea);
-			pRB->qx = q.x;
-			pRB->qy = q.y;
-			pRB->qz = q.z;
-			pRB->qw = q.w;
+            EulerAngles ea;
+            ea.x = (float)sin(rads);
+            ea.y = (float)cos(rads);
+            ea.z = (float)tan(rads);
+            ea.w = 0.0f;
+            Quat q = Eul_ToQuat(ea);
+            pRB->qx = q.x;
+            pRB->qy = q.y;
+            pRB->qz = q.z;
+            pRB->qw = q.w;
 
-			pRB->nMarkers = 3;
+            pRB->nMarkers = 3;
             pRB->Markers = new MarkerData[pRB->nMarkers];
             pRB->MarkerIDs = new int[pRB->nMarkers];
             pRB->MarkerSizes = new float[pRB->nMarkers];
             pRB->MeanError = 0.0f;
-            for(int iMarker=0; iMarker < pRB->nMarkers; iMarker++)
-            {	    
+            for (int iMarker = 0; iMarker < pRB->nMarkers; iMarker++)
+            {
                 pRB->Markers[iMarker][0] = iMarker + 0.1f;		// x
                 pRB->Markers[iMarker][1] = iMarker + 0.2f;		// y
                 pRB->Markers[iMarker][2] = iMarker + 0.3f;		// z
@@ -475,13 +476,13 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
             }
             pOutFrame->nRigidBodies++;
             counter++;
-           
+
         }
 #endif
 
 #if STREAM_SKELETONS
         // Skeleton data
-        if(pModels->arrDataDescriptions[i].type == Descriptor_Skeleton)
+        if (pModels->arrDataDescriptions[i].type == Descriptor_Skeleton)
         {
             sSkeletonDescription* pSK = pModels->arrDataDescriptions[i].Data.SkeletonDescription;
             int index = pOutFrame->nSkeletons;
@@ -490,17 +491,17 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
             pOutFrame->Skeletons[index].nRigidBodies = pSK->nRigidBodies;
             // RigidBody data
             pOutFrame->Skeletons[index].RigidBodyData = new sRigidBodyData[pSK->nRigidBodies];
-            for(int i=0; i<pSK->nRigidBodies; i++)
+            for (int i = 0; i < pSK->nRigidBodies; i++)
             {
                 sRigidBodyData* pRB = &pOutFrame->Skeletons[index].RigidBodyData[i];
                 pRB->ID = pOutFrame->Skeletons[index].skeletonID + i;
                 double rads = (double)counter * 3.14159265358979 / 180.0f;
-                pRB->x = (float) sin(rads);
-                pRB->y = (float) cos(rads);
-                pRB->z = (float) tan(rads);
-				fCounter += 0.1f;
-				if(fCounter > 1.0f)
-					fCounter = 0.1f;
+                pRB->x = (float)sin(rads);
+                pRB->y = (float)cos(rads);
+                pRB->z = (float)tan(rads);
+                fCounter += 0.1f;
+                if (fCounter > 1.0f)
+                    fCounter = 0.1f;
                 pRB->qx = fCounter;
                 pRB->qy = fCounter + 0.1f;
                 pRB->qz = fCounter + 0.2f;
@@ -510,8 +511,8 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
                 pRB->MarkerIDs = new int[pRB->nMarkers];
                 pRB->MarkerSizes = new float[pRB->nMarkers];
                 pRB->MeanError = 0.0f;
-                for(int iMarker=0; iMarker < pRB->nMarkers; iMarker++)
-                {	    
+                for (int iMarker = 0; iMarker < pRB->nMarkers; iMarker++)
+                {
                     pRB->Markers[iMarker][0] = iMarker + 0.1f;		// x
                     pRB->Markers[iMarker][1] = iMarker + 0.2f;		// y
                     pRB->Markers[iMarker][2] = iMarker + 0.3f;		// z
@@ -528,19 +529,19 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
     }
 
 #if STREAM_LABELED_MARKERS
-	// add marker data
-	pOutFrame->nLabeledMarkers = 10;
-	for(int iMarker=0; iMarker < 10; iMarker++)
-	{	    
-		sMarker* pMarker = &pOutFrame->LabeledMarkers[iMarker];
-		pMarker->ID = iMarker+100;
-		pMarker->x = (float) iMarker;
-		pMarker->y = (float) (counter2 * iMarker);
-		pMarker->z = (float) iMarker;
-		pMarker->size = 5.0f;
-	}
-	counter2++;
-	counter2 %= 100;
+    // add marker data
+    pOutFrame->nLabeledMarkers = 10;
+    for (int iMarker = 0; iMarker < 10; iMarker++)
+    {
+        sMarker* pMarker = &pOutFrame->LabeledMarkers[iMarker];
+        pMarker->ID = iMarker + 100;
+        pMarker->x = (float)iMarker;
+        pMarker->y = (float)(counter2 * iMarker);
+        pMarker->z = (float)iMarker;
+        pMarker->size = 5.0f;
+    }
+    counter2++;
+    counter2 %= 100;
 #endif
 
 }
@@ -548,25 +549,25 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
 // Packetize and send a single frame of mocap data to the Client
 void SendFrame(sFrameOfMocapData* pFrame)
 {
-	sPacket packet; 
-	theServer->PacketizeFrameOfMocapData(pFrame, &packet);
-	theServer->SendPacket(&packet);
+    sPacket packet;
+    theServer->PacketizeFrameOfMocapData(pFrame, &packet);
+    theServer->SendPacket(&packet);
 }
 
 // Release any memory we allocated for this sample
 void FreeFrame(sFrameOfMocapData* pFrame)
 {
-    for(int i=0; i < pFrame->nMarkerSets; i++)
+    for (int i = 0; i < pFrame->nMarkerSets; i++)
     {
         delete[] pFrame->MocapData[i].Markers;
     }
 
-    for(int i=0; i < pFrame->nOtherMarkers; i++)
+    for (int i = 0; i < pFrame->nOtherMarkers; i++)
     {
         delete[] pFrame->OtherMarkers;
     }
 
-    for(int i=0; i< pFrame->nRigidBodies; i++)
+    for (int i = 0; i < pFrame->nRigidBodies; i++)
     {
         delete[] pFrame->RigidBodies[i].Markers;
         delete[] pFrame->RigidBodies[i].MarkerIDs;
@@ -600,7 +601,7 @@ int StartPlayingThread()
     security_attribs.bInheritHandle = TRUE;
 
     PlayingThread_Handle = CreateThread(&security_attribs, 0, PlayingThread_Func, NULL, 0, &PlayingThread_ID);
-    if(PlayingThread_Handle ==NULL)
+    if (PlayingThread_Handle == NULL)
     {
         printf("Error creating play thread.");
         return -1;
@@ -631,11 +632,11 @@ void resetServer()
     printf("\nRe-initting Server\n\n");
 
     iSuccess = theServer->Uninitialize();
-    if(iSuccess != 0)
+    if (iSuccess != 0)
         printf("Error uninitting server.\n");
 
     iSuccess = theServer->Initialize(szIPAddress);
-    if(iSuccess != 0)
+    if (iSuccess != 0)
         printf("Error re-initting server.\n");
 
 }
@@ -649,9 +650,9 @@ void __cdecl MessageHandler(int msgType, char* msg)
 // higer res sleep than standard.
 int HiResSleep(int msecs)
 {
-	HANDLE hTempEvent = CreateEvent( 0, true, FALSE, _T("TEMP_EVENT") );
-	timeSetEvent( msecs, 1, (LPTIMECALLBACK)hTempEvent, 0, TIME_ONESHOT | TIME_CALLBACK_EVENT_SET );
-	WaitForSingleObject( hTempEvent, msecs );
-	CloseHandle( hTempEvent );
-	return 1;
+    HANDLE hTempEvent = CreateEvent(0, true, FALSE, _T("TEMP_EVENT"));
+    timeSetEvent(msecs, 1, (LPTIMECALLBACK)hTempEvent, 0, TIME_ONESHOT | TIME_CALLBACK_EVENT_SET);
+    WaitForSingleObject(hTempEvent, msecs);
+    CloseHandle(hTempEvent);
+    return 1;
 }

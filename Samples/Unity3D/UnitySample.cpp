@@ -1,5 +1,5 @@
-//=============================================================================
-// Copyright � NaturalPoint, Inc. All Rights Reserved.
+﻿//=============================================================================
+// Copyright © NaturalPoint, Inc. All Rights Reserved.
 // 
 // This software is provided by the copyright holders and contributors "as is" and
 // any express or implied warranties, including, but not limited to, the implied
@@ -151,6 +151,8 @@ int _tmain(int argc, _TCHAR* argv[])
     }
 
     // Create SlipStream
+    //strcpy(szServerIPAddress, "192.168.0.5");
+    //strcpy(szMyIPAddress, "192.168.0.105");
     gSlipStream = new cSlipStream(szUnityIPAddress,16000);
 
     // Create NatNet Client
@@ -327,7 +329,7 @@ int CreateClient(int iConnectionType)
         theClient->GetServerDescription(&ServerDescription);
         if(!ServerDescription.HostPresent)
         {
-            printf("Unable to connect to server. Host not present. Exiting.");
+            printf("Unable to connect to server. Host not present. Exiting.\n");
             return 1;
         }
         printf( "[UnityClient] Server    : %s\n", ServerDescription.szHostComputerName );
