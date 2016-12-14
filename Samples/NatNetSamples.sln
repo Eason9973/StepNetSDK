@@ -18,6 +18,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TimingClient", "TimingClien
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StepVR_Server", "StepVR_Server\StepVR_Server.vcxproj", "{54C75480-D00B-4D01-A61C-C8B043C407C2}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StepVR_HMD_Server", "StepVR_HMD_Server\StepVR_HMD_Server.vcxproj", "{44D8082C-E9CC-4CCC-A7BD-A8DD28BAFE72}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -90,6 +92,14 @@ Global
 		{54C75480-D00B-4D01-A61C-C8B043C407C2}.Release|Win32.Build.0 = Release|Win32
 		{54C75480-D00B-4D01-A61C-C8B043C407C2}.Release|x64.ActiveCfg = Release|x64
 		{54C75480-D00B-4D01-A61C-C8B043C407C2}.Release|x64.Build.0 = Release|x64
+		{44D8082C-E9CC-4CCC-A7BD-A8DD28BAFE72}.Debug|Win32.ActiveCfg = Debug|Win32
+		{44D8082C-E9CC-4CCC-A7BD-A8DD28BAFE72}.Debug|Win32.Build.0 = Debug|Win32
+		{44D8082C-E9CC-4CCC-A7BD-A8DD28BAFE72}.Debug|x64.ActiveCfg = Debug|x64
+		{44D8082C-E9CC-4CCC-A7BD-A8DD28BAFE72}.Debug|x64.Build.0 = Debug|x64
+		{44D8082C-E9CC-4CCC-A7BD-A8DD28BAFE72}.Release|Win32.ActiveCfg = Release|Win32
+		{44D8082C-E9CC-4CCC-A7BD-A8DD28BAFE72}.Release|Win32.Build.0 = Release|Win32
+		{44D8082C-E9CC-4CCC-A7BD-A8DD28BAFE72}.Release|x64.ActiveCfg = Release|x64
+		{44D8082C-E9CC-4CCC-A7BD-A8DD28BAFE72}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
