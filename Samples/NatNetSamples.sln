@@ -20,6 +20,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StepVR_Server", "StepVR_Ser
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StepVR_HMD_Server", "StepVR_HMD_Server\StepVR_HMD_Server.vcxproj", "{44D8082C-E9CC-4CCC-A7BD-A8DD28BAFE72}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StepVRService", "StepVRService\StepVRService.vcxproj", "{A2CAC253-7E12-4035-B537-B310643153D2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -100,6 +102,12 @@ Global
 		{44D8082C-E9CC-4CCC-A7BD-A8DD28BAFE72}.Release|Win32.Build.0 = Release|Win32
 		{44D8082C-E9CC-4CCC-A7BD-A8DD28BAFE72}.Release|x64.ActiveCfg = Release|x64
 		{44D8082C-E9CC-4CCC-A7BD-A8DD28BAFE72}.Release|x64.Build.0 = Release|x64
+		{A2CAC253-7E12-4035-B537-B310643153D2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{A2CAC253-7E12-4035-B537-B310643153D2}.Debug|Win32.Build.0 = Debug|Win32
+		{A2CAC253-7E12-4035-B537-B310643153D2}.Debug|x64.ActiveCfg = Debug|Win32
+		{A2CAC253-7E12-4035-B537-B310643153D2}.Release|Win32.ActiveCfg = Release|Win32
+		{A2CAC253-7E12-4035-B537-B310643153D2}.Release|Win32.Build.0 = Release|Win32
+		{A2CAC253-7E12-4035-B537-B310643153D2}.Release|x64.ActiveCfg = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
