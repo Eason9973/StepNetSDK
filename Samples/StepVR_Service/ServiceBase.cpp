@@ -309,6 +309,7 @@ void CServiceBase::Stop()
 //
 void CServiceBase::OnStop()
 {
+
 }
 
 

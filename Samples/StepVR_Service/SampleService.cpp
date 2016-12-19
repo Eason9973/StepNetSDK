@@ -20,6 +20,8 @@
 #pragma region Includes
 #include "SampleService.h"
 #include "ThreadPool.h"
+#include "StepVRDataSource.h"
+#include <fstream>
 #pragma endregion
 
 
@@ -82,6 +84,12 @@ void CSampleService::OnStart(DWORD dwArgc, LPWSTR *lpszArgv)
     WriteEventLogEntry(L"StepVRService in OnStart", 
         EVENTLOG_INFORMATION_TYPE);
 
+    //std::fstream outf("C:\\StepVR\\stepvr_service.txt", std::ios::app);
+    //outf << "StepVRDataSource_Start()" << "\n";
+    //outf.close();
+
+    StepVRDataSource_Start();
+
     // Queue the main service function for execution in a worker thread.
     CThreadPool::QueueUserWorkItem(&CSampleService::ServiceWorkerThread, this);
 }
@@ -99,8 +107,12 @@ void CSampleService::ServiceWorkerThread(void)
     while (!m_fStopping)
     {
         // Perform main service function here...
+        StepVRDataSource_Update();
 
-        ::Sleep(2000);  // Simulate some lengthy operations.
+        //PWSTR localAppData;
+        //wcstombs(log, localAppData, 100);
+        //WriteEventLogEntry("", EVENTLOG_ERROR_TYPE);
+        //::Sleep(2000);  // Simulate some lengthy operations.
     }
 
     // Signal the stopped event.
@@ -125,6 +137,8 @@ void CSampleService::OnStop()
     // Log a service stop message to the Application log.
     WriteEventLogEntry(L"StepVRService in OnStop", 
         EVENTLOG_INFORMATION_TYPE);
+    
+    StepVRDataSource_Stop();
 
     // Indicate that the service is stopping and wait for the finish of the 
     // main service function (ServiceWorkerThread).
@@ -134,3 +148,4 @@ void CSampleService::OnStop()
         throw GetLastError();
     }
 }
+

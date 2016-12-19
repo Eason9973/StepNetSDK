@@ -21,7 +21,6 @@
 
 #include "ServiceBase.h"
 
-
 class CSampleService : public CServiceBase
 {
 public:

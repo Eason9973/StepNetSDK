@@ -30,10 +30,10 @@
 // 
 
 // Internal name of the service
-#define SERVICE_NAME             L"StepVRService"
+#define SERVICE_NAME             L"StepVR_Service"
 
 // Displayed name of the service
-#define SERVICE_DISPLAY_NAME     L"StepVRService"
+#define SERVICE_DISPLAY_NAME     L"StepVR_Service"
 
 // Service start options.
 #define SERVICE_START_TYPE       SERVICE_AUTO_START //SERVICE_DEMAND_START
@@ -47,6 +47,8 @@
 // The password to the service account name
 #define SERVICE_PASSWORD         NULL
 
+
+#include <fstream>
 
 //
 //  FUNCTION: wmain(int, wchar_t *[])
