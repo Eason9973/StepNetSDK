@@ -30,7 +30,6 @@ the NatNet server.
 #include <math.h>
 #include "NatNetTypes.h"
 #include "NatNetServer.h"
-
 #include "mmsystem.h"
 #include "..\SampleClient3D\NATUtils.h"
 
@@ -41,6 +40,7 @@ the NatNet server.
 #include <stdlib.h>
 #include <windows.h>
 #include <shellapi.h>
+
 #include "StepVR.h"
 #pragma comment(lib,"StepVR.lib")
 #define _CRTDBG_MAP_ALLOC 
@@ -74,9 +74,9 @@ bool g_bPlaying = false;
 DWORD PlayingThread_ID = NULL;
 HANDLE PlayingThread_Handle = NULL;
 int counter = 0;
-int counter2 = 0;
+//int counter2 = 0;
 int counter3 = 0;
-float fCounter = 0.0f;
+//float fCounter = 0.0f;
 
 unsigned int MyDataPort = 3130;
 unsigned int MyCommandPort = 3131;
@@ -447,7 +447,8 @@ void FreeDescription(sDataDescriptions* pDescription)
 // Build frame of MocapData
 void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData* pOutFrame)
 {
-    StepVR::SingleNode::NodeID nodeID = StepVR::SingleNode::NodeID_Head;
+    //StepVR::SingleNode::NodeID nodeID = StepVR::SingleNode::NodeID_Head;
+    unsigned int nodeID = 6;
 
     StepVR::Frame frame = manager->GetFrame();
     StepVR::Frame* frame2;
@@ -715,7 +716,7 @@ DWORD WINAPI PlayingThread_Func(void *dummy)
 
         sFrameOfMocapData frame;
         BuildFrame(g_lCurrentFrame, &descriptions, &frame);
-        if (fre_div % 3 == 0)
+        //if (fre_div % 3 == 0)
         {
             SendFrame(&frame);
             FreeFrame(&frame);
