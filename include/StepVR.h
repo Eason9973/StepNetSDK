@@ -124,6 +124,9 @@ namespace StepVR {
 		{
 			NodeID_LeftWrist = 1,
 			NodeID_RightWrist = 2,
+			NodeID_LeftAnkle = 3,
+			NodeID_RightAnkle = 4,
+			NodeID_Neck = 5,
 			NodeID_Head = 6,
 			NodeID_LeftUpperArm = 7,
 			NodeID_RightUpperArm = 8,
@@ -290,6 +293,7 @@ namespace StepVR {
 		*            2 is open port fail, 
 		*            3 is start thread fail.
 		*            4 is replay mode.
+		*            5 is replay fail.
 		**/
 		STEPVR_API int Start(char* transmatfile = "TransMat.txt");
 
@@ -311,12 +315,7 @@ namespace StepVR {
 		**/
 		STEPVR_API Frame GetFrame();
 
-
-
 	};
-
-
-
 }
 
 #endif // StepVR_h__

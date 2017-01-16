@@ -1,0 +1,47 @@
+#每一帧的字节数,直连模式framelen=31
+framelen:28
+#火箭形状的标准件的零姿态，1表示水平放置为零姿态 0表示侧立是零姿态
+ZeroPose:1
+#是否是回放模式
+ReplayMode:1
+#是否使用歌尔的数据 1是使用 0 不使用,默认使用
+[GoerEnable]:1
+#是否使用gcwt的数据 1是使用 0 不使用,默认使用
+[GcwtEnable]:1
+#下面的变量是董荣生测试使用的/////////////////////////////////
+#电机转速
+zhuansu:3600
+#分频
+fenpin:1
+#标准件类型 1：火箭  2：蛇形手柄
+StandPartType:1
+[vid,pid,interface]:0486,00a9,0
+[vid,pid,interface]:0486,00a9,1
+#AP表示连接的AP个数，默认是1.针对天津的那个可以设置为2
+AP:1
+#仅仅供谢祖永测试头部偏移使用x y z
+[HeadOffsetX]:0.114
+[HeadOffsetY]:0
+[HeadOffsetZ]:-0.12
+#//////////////杨博测试使用///////////////////////////////////////
+#是否使用周俊算法 0 表示不使用 1表示使用
+UseZJ:0
+#设置算法参数
+AlgorithmParam:0.015
+#设置Lighthouse角度
+AlgorithmLHAngle:40.0
+#直连模式nodeid设定,由于每一帧数据中没有nodeid的信息，所以需要在此处设定一个。默认为1.
+supposenodeid:1
+#该值的作用是，段志勇部门需要烧制bin格式矩阵到硬件当中，transmat.txt会转译成transmat_rocket.bin和tramsmat_snake.bin
+#由于6号，头部节点比较特殊，所以如果需要生成6号节点的bin格式的矩阵时，需要把下面headnode:6放开。然后在生成bin格式矩阵.
+#HeadNode:6
+#意义
+outlierThreshold:0.5
+#意义
+posThreshold:0.001
+#意义
+velThreshold:0.05
+#意义
+countThreshold:8
+#意义
+delayTime:0.012
