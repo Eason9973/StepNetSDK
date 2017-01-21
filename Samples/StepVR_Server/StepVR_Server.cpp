@@ -40,9 +40,10 @@ the NatNet server.
 #include <stdlib.h>
 #include <windows.h>
 #include <shellapi.h>
+#include <fstream>
 
 #include "StepVR.h"
-#pragma comment(lib,"StepVR.lib")
+//#pragma comment(lib,"StepVR.lib")
 #define _CRTDBG_MAP_ALLOC 
 #define new new( _CLIENT_BLOCK, __FILE__, __LINE__)
 
@@ -71,21 +72,23 @@ NatNetServer* theServer;    					// The NatNet Server
 sDataDescriptions descriptions; 				// Describes what is sent (Marker sets, rigid bodies, etc)
 long g_lCurrentFrame = 0;
 bool g_bPlaying = false;
+bool g_bVision = true;
+int g_parentId = 0;
 DWORD PlayingThread_ID = NULL;
 HANDLE PlayingThread_Handle = NULL;
 int counter = 0;
-//int counter2 = 0;
+int counter2 = 0;
 int counter3 = 0;
-//float fCounter = 0.0f;
+float fCounter = 0.0f;
 
-unsigned int MyDataPort = 3130;
-unsigned int MyCommandPort = 3131;
-unsigned long lAddresses[10];
+//unsigned int MyDataPort = 3130;     // 1510
+//unsigned int MyCommandPort = 3131;  // 1511
+unsigned long lAddresses[12];
 
 #define STREAM_RBS 1
-#define STREAM_MARKERS 1
-#define STREAM_SKELETONS 1
-#define STREAM_LABELED_MARKERS 1
+#define STREAM_MARKERS 0
+#define STREAM_SKELETONS 0
+#define STREAM_LABELED_MARKERS 0
 
 //using namespace StepVR;
 float rd_p[3], rd_o[4];
@@ -96,7 +99,19 @@ int _tmain(int argc, _TCHAR* argv[])
     // start stepvr.manager
     _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     //std::cout << "This is MoCap CPlusPlus main function test." << std::endl;
+
+    if (argc <= 1) {
+    }
+    else if (argc <= 2) {
+        //g_parentId = atoi(argv[1]);
+    }
+    else if (argc <= 3) {
+
+    }
+    printf("global parentId = %d\n", g_parentId);
+
     int fd = manager->Start();
+    
     //printf("fd: %d\n", fd);
     switch (fd)
     {
@@ -112,8 +127,14 @@ int _tmain(int argc, _TCHAR* argv[])
     case 3:
         printf("StepVR.dll      : %d, start thread fail\n", fd);
         break;
+    case 4:
+        printf("StepVR.dll      : %d, replay mode switched fail\n", fd);
+        break;
+    case 5:
+        printf("StepVR.dll      : %d, start replay fail\n", fd);
+        break;
     default:
-        //exit(-1);
+        printf("StepVR.dll      : %d, start fail\n", fd);
         break;
     }
 
@@ -131,10 +152,10 @@ int _tmain(int argc, _TCHAR* argv[])
     BuildDescription(&descriptions);
 
     // OK! Ready to stream data.  Listen for request from clients (RequestHandler())
-    printf("\n\nCommands:\nn\tnext frame\ns\tstream frames\nr\treset server\nq\tquit\n\r\tmulticast\nu\tunicast\n\n");
+    printf("\n\nCommands:\nn\tnext frame\ns\tstream frames\nr\treset server\nq\tquit\nm\tmulticast\nu\tunicast\nv\tvision\n\n");
     bool bExit = false;
-    while (int c = _getch())
-    {
+
+    while (int c = _getch()) {
         switch (c)
         {
         case 'n':							// next frame
@@ -144,20 +165,28 @@ int _tmain(int argc, _TCHAR* argv[])
             SendFrame(&frame);
             FreeFrame(&frame);
             }
-        break;
+            break;
+
         case 'q':                           // quit
             bExit = true;
             break;
+
         case 's':							// play continuously
             g_lCurrentFrame = 0;
-            if (g_bPlaying)
+            if (g_bPlaying) {
+                printf("Stop to send Frames.\n");
                 StopPlayingThread();
-            else
+            }
+            else {
+                printf("Start to send Frames, never stop unless you ask me\n");
                 StartPlayingThread();
+            }
             break;
+
         case 'r':	                        // reset server
             resetServer();
             break;
+
         case 'm':	                        // change to multicast
             iResult = CreateServer(ConnectionType_Multicast);
             if (iResult == ErrorCode_OK)
@@ -165,12 +194,25 @@ int _tmain(int argc, _TCHAR* argv[])
             else
                 printf("Error changing server connection type to Multicast.\n\n");
             break;
+
         case 'u':	                        // change to unicast
             iResult = CreateServer(ConnectionType_Unicast);
             if (iResult == ErrorCode_OK)
                 printf("Server connection type changed to Unicast.\n\n");
             else
                 printf("Error changing server connection type to Unicast.\n\n");
+            break;
+
+        case 'v':
+            if (g_bVision) {
+                g_bVision = false;
+                printf("Vision is false\n");
+            }
+            else
+            {
+                g_bVision = true;
+                printf("Vision is true\n");
+            }
             break;
 
         default:
@@ -376,10 +418,10 @@ void BuildDescription(sDataDescriptions* pDescription)
         sRigidBodyDescription* pRigidBodyDescription = new sRigidBodyDescription();
         sprintf(pRigidBodyDescription->szName, "RigidBody %d", i);
         pRigidBodyDescription->ID = i;
-        pRigidBodyDescription->offsetx = 1.0f;
-        pRigidBodyDescription->offsety = 2.0f;
-        pRigidBodyDescription->offsetz = 3.0f;
-        pRigidBodyDescription->parentID = 2;
+        pRigidBodyDescription->offsetx = 0.0f;
+        pRigidBodyDescription->offsety = 0.0f;
+        pRigidBodyDescription->offsetz = 0.0f;
+        pRigidBodyDescription->parentID = g_parentId;
         pDescription->arrDataDescriptions[index].type = Descriptor_RigidBody;
         pDescription->arrDataDescriptions[index].Data.RigidBodyDescription = pRigidBodyDescription;
         pDescription->nDataDescriptions++;
@@ -447,28 +489,6 @@ void FreeDescription(sDataDescriptions* pDescription)
 // Build frame of MocapData
 void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData* pOutFrame)
 {
-    //StepVR::SingleNode::NodeID nodeID = StepVR::SingleNode::NodeID_Head;
-    unsigned int nodeID = 6;
-
-    StepVR::Frame frame = manager->GetFrame();
-    StepVR::Frame* frame2;
-    frame2 = &frame;
-    StepVR::SingleNode positionframe = frame.GetSingleNode();
-    StepVR::Vector3f v3 = positionframe.GetPosition(nodeID);
-    StepVR::Vector4f v4 = positionframe.GetQuaternion(nodeID);
-    printf("F%d, node:%d, pos:[%.4f %.4f %.4f], ori:[%.3f %.3f %.3f %.3f] \n", counter3++, nodeID, v3.x, v3.y, v3.z, v4.x, v4.y, v4.z, v4.w);
-
-    rd_p[0] = v3.x;
-    rd_p[1] = v3.y;
-    rd_p[2] = v3.z;
-
-    rd_o[0] = v4.x;
-    rd_o[1] = v4.y;
-    rd_o[2] = v4.z;
-    rd_o[3] = v4.w;
-    //Sleep(10);
-    //}
-
     //----------------------------------
     if (!pModels)
     {
@@ -478,19 +498,15 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
 
     ZeroMemory(pOutFrame, sizeof(sFrameOfMocapData));
     pOutFrame->iFrame = FrameNumber;
-    pOutFrame->fLatency = (float)GetTickCount();
+    pOutFrame->fTimestamp = (float)GetTickCount();
     pOutFrame->nOtherMarkers = 0;
     pOutFrame->nMarkerSets = 0;
-    pOutFrame->nRigidBodies = 1;
+    pOutFrame->nRigidBodies = 0;
     pOutFrame->nLabeledMarkers = 0;
 
-    int num01 = pModels->nDataDescriptions;
-    //printf("num01 :%d\n", num01);    //20
-    //for(int i=0; i < pModels->nDataDescriptions; i++)
-    int i = 0;
-    if (i == 0)
+    for (int i = 0; i < pModels->nDataDescriptions; i++)
     {
-#if STREAM_MARKERS == 0
+#if STREAM_MARKERS
         // MarkerSet data
         if (pModels->arrDataDescriptions[i].type == Descriptor_MarkerSet)
         {
@@ -517,69 +533,71 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
 #endif
 
 #if STREAM_RBS
-        /*
-        float rd_position[3];
-        rd_position[0] = rd_p[0];
-        rd_position[1] = rd_p[1];
-        rd_position[2] = rd_p[2];
-
-        float rd_orientation[4];
-        rd_orientation[0] = rd_o[0];
-        rd_orientation[1] = rd_o[1];
-        rd_orientation[2] = rd_o[2];
-        rd_orientation[3] = rd_o[3];
-        */
         // RigidBody data
         int anchor = pModels->arrDataDescriptions[i + 1].type;
         //printf("anchor :%d\n", anchor);
         if (pModels->arrDataDescriptions[i + 1].type == Descriptor_RigidBody)
         {
             sRigidBodyDescription* pMS = pModels->arrDataDescriptions[i].Data.RigidBodyDescription;
-            //int index = pOutFrame->nRigidBodies;
-            int index = 0;
-            //printf("index: %d\n", index);
+            int index = pOutFrame->nRigidBodies;
             sRigidBodyData* pRB = &pOutFrame->RigidBodies[index];
 
-            //pRB->ID = pMS->ID;
-            int test_id = 1;
-            pRB->ID = test_id;
-            //printf("ID:%d\n", pRB->ID);
-            /*
-            double rads = (double)counter * 3.14159265358979 / 180.0f;
-            pRB->x = (float) sin(rads);
-            pRB->y = (float) cos(rads);
-            pRB->z = (float) tan(rads);
-            */
-            pRB->x = rd_p[0];
-            pRB->y = rd_p[1];
-            pRB->z = rd_p[2];
-            /*
-            EulerAngles ea;
-            ea.x = (float) sin(rads);
-            ea.y = (float) cos(rads);
-            ea.z = (float) tan(rads);
-            ea.w = 0.0f;
-            Quat q = Eul_ToQuat(ea);
-            pRB->qx = q.x;
-            pRB->qy = q.y;
-            pRB->qz = q.z;
-            pRB->qw = q.w;
-            */
-            pRB->qx = rd_o[0];
-            pRB->qy = rd_o[1];
-            pRB->qz = rd_o[2];
-            pRB->qw = rd_o[3];
+            pRB->ID = pMS->ID;
+            unsigned char node_id = pRB->ID;
+            StepVR::Frame frame = manager->GetFrame();
+            StepVR::SingleNode positionframe = frame.GetSingleNode();
+            StepVR::Vector3f v3 = positionframe.GetPosition(node_id);
+            StepVR::Vector4f v4 = positionframe.GetQuaternion(node_id);
 
-            pRB->nMarkers = 1;
+
+
+            //std::fstream outf("C:\\StepVR\\stepvr_service.txt", std::ios::app);
+            //outf << "node_id(" << int(node_id) << ")";
+            //outf << "v3.x(" << v3.x << ")\n";
+            //outf.close();
+
+
+
+            if (v3.x == 0 && v3.y == 0 && v3.z == 0 && v4.x == 0 && v4.y == 0 && v4.z == 0 && v4.w == 1.0)
+            {
+                //continue;
+            }
+            else {
+                if (g_bVision)
+                    printf("F%d, node:%d, pos:[%.4f %.4f %.4f], ori:[%.3f %.3f %.3f %.3f] \n", counter3++, node_id, v3.x, v3.y, v3.z, v4.x, v4.y, v4.z, v4.w);
+            }
+
+            //printf("ID:%d\n", pRB->ID);
+            //double rads = (double)counter * 3.14159265358979 / 180.0f;
+            //pRB->x = (float) sin(rads);
+            //pRB->y = (float) cos(rads);
+            //pRB->z = (float) tan(rads);
+            pRB->x = v3.x;
+            pRB->y = v3.y;
+            pRB->z = v3.z;
+            
+            //EulerAngles ea;
+            //ea.x = (float) sin(rads);
+            //ea.y = (float) cos(rads);
+            //ea.z = (float) tan(rads);
+            //ea.w = 0.0f;
+            //Quat q = Eul_ToQuat(ea);
+            //pRB->qx = q.x;
+            //pRB->qy = q.y;
+            //pRB->qz = q.z;
+            //pRB->qw = q.w;
+            pRB->qx = v4.x;
+            pRB->qy = v4.y;
+            pRB->qz = v4.z;
+            pRB->qw = v4.w;
+
+            // there is no Marker in stepvr
+            pRB->nMarkers = 0;
             pRB->Markers = new MarkerData[pRB->nMarkers];
             pRB->MarkerIDs = new int[pRB->nMarkers];
             pRB->MarkerSizes = new float[pRB->nMarkers];
             pRB->MeanError = 0.0f;
-            int num02 = pRB->nMarkers;
-            //printf("num02:%d\n", num02);
-            //for(int iMarker=0; iMarker < pRB->nMarkers; iMarker++)
-            int iMarker = 0;
-            if (iMarker == 0)
+            for (int iMarker = 0; iMarker < pRB->nMarkers; iMarker++)
             {
                 pRB->Markers[iMarker][0] = iMarker + 0.1f;		// x
                 pRB->Markers[iMarker][1] = iMarker + 0.2f;		// y
@@ -587,14 +605,13 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
                 pRB->MarkerIDs[iMarker] = iMarker + 200;
                 pRB->MarkerSizes[iMarker] = 77.0f;
             }
+
             pOutFrame->nRigidBodies++;
             counter++;
-            //test_id++;
-
         }
 #endif
 
-#if STREAM_SKELETONS == 0
+#if STREAM_SKELETONS
         // Skeleton data
         if (pModels->arrDataDescriptions[i].type == Descriptor_Skeleton)
         {
@@ -642,7 +659,7 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
 #endif
     }
 
-#if STREAM_LABELED_MARKERS == 0
+#if STREAM_LABELED_MARKERS
     // add marker data
     pOutFrame->nLabeledMarkers = 10;
     for (int iMarker = 0; iMarker < 10; iMarker++)
@@ -687,47 +704,26 @@ void FreeFrame(sFrameOfMocapData* pFrame)
         delete[] pFrame->RigidBodies[i].MarkerIDs;
         delete[] pFrame->RigidBodies[i].MarkerSizes;
     }
-
 }
 
 // PlayingThread_Func streams data at ~60hz 
 DWORD WINAPI PlayingThread_Func(void *dummy)
 {
-    printf("Start to send Frames, never stop unless you ask me\n");
-
-    static int fre_div = 0;
+    int currentSecond = 0;
+    int fps = 0;
+    
     while (1)
     {
-        /*
-        char p;
-        if (kbhit())
-        {
-        p = getch();
-        if (p == 'x')
-        {
-        //printf("Stop\n");
-        //manager->Stop;
-        //delete manager;
-        //_CrtDumpMemoryLeaks();
-        break;
-        }
-        }*/
-        //for (int i = 0; i < 15; i++)
-
         sFrameOfMocapData frame;
         BuildFrame(g_lCurrentFrame, &descriptions, &frame);
-        //if (fre_div % 3 == 0)
-        {
-            SendFrame(&frame);
-            FreeFrame(&frame);
-            //printf("Sent Frame %d", g_lCurrentFrame);
-            g_lCurrentFrame++;
+        SendFrame(&frame);
+        FreeFrame(&frame);
 
-            //printf("In frame\n");
-        }
-        HiResSleep(5);
-        fre_div++;
-        if (fre_div > 60000)fre_div = 0;
+        //printf("Sent Frame %d", g_lCurrentFrame);
+        g_lCurrentFrame++;
+        fps++;
+
+        HiResSleep(4);
     }
 
     return ErrorCode_OK;

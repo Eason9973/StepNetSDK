@@ -70,9 +70,9 @@ unsigned int MyCommandPort = 3131;
 unsigned long lAddresses[10];
 
 #define STREAM_RBS 1
-#define STREAM_MARKERS 1
-#define STREAM_SKELETONS 1
-#define STREAM_LABELED_MARKERS 1
+#define STREAM_MARKERS 0
+#define STREAM_SKELETONS 0
+#define STREAM_LABELED_MARKERS 0
 
 int _tmain(int argc, _TCHAR* argv[])
 {
