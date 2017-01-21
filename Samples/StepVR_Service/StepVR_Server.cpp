@@ -23,7 +23,7 @@ the NatNet server.
 
 */
 
-#include "StepVRDataSource.h"
+#include "StepVR_Server.h"
 #include "ServiceBase.h"
 #include <fstream>
 
@@ -39,19 +39,27 @@ sDataDescriptions descriptions; 				// Describes what is sent (Marker sets, rigi
 
 long g_lCurrentFrame;
 bool g_bPlaying;
+bool g_bVision = false;
+int g_parentId = 0;
 DWORD PlayingThread_ID;
 HANDLE PlayingThread_Handle;
-int counter;
-int counter2;
-float fCounter;
+int counter = 0;
+int counter2 = 0;
+int counter3 = 0;
+float fCounter = 0.0f;
 
-unsigned int MyDataPort;
-unsigned int MyCommandPort;
+unsigned int MyDataPort = 3130;     // 1510
+unsigned int MyCommandPort = 3131;  // 1511
 unsigned long lAddresses[10];
 
-//using namespace StepVR;
+#define STREAM_RBS 1
+#define STREAM_MARKERS 0
+#define STREAM_SKELETONS 0
+#define STREAM_LABELED_MARKERS 0
+
 float rd_p[3], rd_o[4];
-StepVR::Manager* manager;
+std::fstream log_stepvr;
+StepVR::Manager* manager = new StepVR::Manager();
 
 void BuildDescription(sDataDescriptions* pDescription);
 void SendDescription(sDataDescriptions* pDescription);
@@ -63,48 +71,55 @@ void resetServer();
 int CreateServer(int iConnectionType);
 int HiResSleep(int msecs);
 
-//// callbacks
-//extern void __cdecl MessageHandler(int msgType, char* msg);
-//extern int __cdecl RequestHandler(sPacket* pPacketIn, sPacket* pPacketOut, void* pUserData);
+// callbacks
+extern void __cdecl MessageHandler(int msgType, char* msg);
+extern int __cdecl RequestHandler(sPacket* pPacketIn, sPacket* pPacketOut, void* pUserData);
 
-int StepVRDataSource_Start()
+int StepVR_Server_Start()
 {
+    log_stepvr.open("C:\\StepVR\\stepvr_service.txt", std::ios::app);
+    log_stepvr << "\r\n\r\n";
+
     g_lCurrentFrame = 0;
     g_bPlaying = false;
-
-    counter = 0;
-    counter2 = 0;
-    fCounter = 0.f;
-
-    MyDataPort = 3130;
-    MyCommandPort = 3131;
-
+    
     manager = new StepVR::Manager("C:\\StepVR\\config.txt");
-
     // start stepvr.manager
     //_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 
     //std::cout << "This is MoCap CPlusPlus main function test." << std::endl;
     int fd = manager->Start("C:\\StepVR\\TransMat.txt");
-    //printf("fd: %d\n", fd);
-    //switch (fd)
-    //{
-    //case 0:
-    //    printf("StepVR.dll loaded succeeded.\n");
-    //    break;
-    //case 1:
-    //    printf("StepVR.dll      : %d, load matrix fail\n", fd);
-    //    break;
-    //case 2:
-    //    printf("StepVR.dll      : %d, open port fail\n", fd);
-    //    break;
-    //case 3:
-    //    printf("StepVR.dll      : %d, start thread fail\n", fd);
-    //    break;
-    //default:
-    //    //exit(-1);
-    //    break;
-    //}
+
+    if (log_stepvr.is_open()) {
+        switch (fd)
+        {
+        case 0:
+            log_stepvr << "StepVR.dll loaded succeeded.\n";
+            break;
+        case 1:
+            log_stepvr << "StepVR.dll      : " << fd << ", load matrix fail\n";
+            break;
+        case 2:
+            log_stepvr << "StepVR.dll      : " << fd << ", open port fail\n";
+            break;
+        case 3:
+            log_stepvr << "StepVR.dll      : " << fd << ", start thread fail\n";
+            break;
+        case 4:
+            log_stepvr << "StepVR.dll      : " << fd << ", replay mode switched fail\n";
+            break;
+        case 5:
+            log_stepvr << "StepVR.dll      : " << fd << ", start replay fail\n";
+            break;
+        default:
+            log_stepvr << "StepVR.dll      : " << fd << ", start fail\n";
+            break;
+        }
+    }
+
+    //std::fstream outf("C:\\StepVR\\stepvr_service.txt", std::ios::app);
+    //outf << "fd(" << fd << ")\n";
+    //outf.close();
 
     // Create a NatNet server
     int iConnectionType = ConnectionType_Multicast;
@@ -113,7 +128,10 @@ int StepVRDataSource_Start()
     int iResult = CreateServer(iConnectionType);
     if (iResult != ErrorCode_OK)
     {
-        printf("Error initializing server.  See log for details.  Exiting");
+        //printf("Error initializing server.  See log for details.  Exiting");
+        if (log_stepvr.is_open()) {
+            log_stepvr << "Error initializing server.  See log for details.  Exiting";
+        }
         return ErrorCode_Internal;
     }
 
@@ -121,82 +139,37 @@ int StepVRDataSource_Start()
     BuildDescription(&descriptions);
 
     // OK! Ready to stream data.  Listen for request from clients (RequestHandler())
-    printf("\n\nCommands:\nn\tnext frame\ns\tstream frames\nr\treset server\nq\tquit\n\r\tmulticast\nu\tunicast\n\n");
-    bool bExit = false;
-    //while (int c = _getch())
-    int c = 's';
-    {
-        switch (c)
-        {
-        case 'n':							// next frame
-        {
-            sFrameOfMocapData frame;
-            BuildFrame(g_lCurrentFrame++, &descriptions, &frame);
-            SendFrame(&frame);
-            FreeFrame(&frame);
-        }
-        break;
-        case 'q':                           // quit
-            bExit = true;
-            break;
-        case 's':							// play continuously
-            g_lCurrentFrame = 0;
-            if (g_bPlaying)
-                g_bPlaying = false;
-            else
-                g_bPlaying = true;
-            break;
-        case 'r':	                        // reset server
-            resetServer();
-            break;
-        case 'm':	                        // change to multicast
-            iResult = CreateServer(ConnectionType_Multicast);
-            if (iResult == ErrorCode_OK)
-                printf("Server connection type changed to Multicast.\n\n");
-            else
-                printf("Error changing se rver connection type to Multicast.\n\n");
-            break;
-        case 'u':	                        // change to unicast
-            iResult = CreateServer(ConnectionType_Unicast);
-            if (iResult == ErrorCode_OK)
-                printf("Server connection type changed to Unicast.\n\n");
-            else
-                printf("Error changing server connection type to Unicast.\n\n");
-            break;
+    //printf("\n\nCommands:\nn\tnext frame\ns\tstream frames\nr\treset server\nq\tquit\n\r\tmulticast\nu\tunicast\n\n");
 
-        default:
-            break;
-        }
-
-        if (bExit)
-        {
-            theServer->Uninitialize();
-            FreeDescription(&descriptions);
-            //break;
-        }
+    if (log_stepvr.is_open()) {
+        log_stepvr << "Steam Data Mode.\n";
     }
-
 }
 
-int StepVRDataSource_Stop()
+int StepVR_Server_Stop()
 {
     // stop stepvr.manager
     manager->Stop();
     delete manager;
-    ///_CrtDumpMemoryLeaks();
+    _CrtDumpMemoryLeaks();
     //getchar();
     //outf.close();
+
+    if (log_stepvr.is_open())
+        log_stepvr.close();
 
     return ErrorCode_OK;
 }
 
 // PlayingThread_Func streams data at ~240hz 
-void StepVRDataSource_Update()
+void StepVR_Server_Update()
 {
     sFrameOfMocapData frame;
     BuildFrame(g_lCurrentFrame, &descriptions, &frame);
+    
     SendFrame(&frame);
     FreeFrame(&frame);
+
     g_lCurrentFrame++;
 
     HiResSleep(4);
@@ -221,11 +194,15 @@ int CreateServer(int iConnectionType)
     unsigned char ver[4];
     theServer->NatNetVersion(ver);
     //printf("NatNet Simple Server (NatNet ver. %d.%d.%d.%d)\n", ver[0], ver[1], ver[2], ver[3]);
+    if (log_stepvr.is_open()) {
+        log_stepvr << "NatNet ver()" << ver[0] << ver[1] << ver[2] << ver[3] << "\n";
+    }
 
     //// set callbacks
-    //theServer->SetErrorMessageCallback(MessageHandler);
-    //theServer->SetVerbosityLevel(Verbosity_Debug);
-    //theServer->SetMessageResponseCallback(RequestHandler);	    // Handles requests from the Client
+    // OK! Ready to stream data.  Listen for request from clients (RequestHandler())
+    theServer->SetErrorMessageCallback(MessageHandler);
+    theServer->SetVerbosityLevel(Verbosity_Debug);
+    theServer->SetMessageResponseCallback(RequestHandler);	    // Handles requests from the Client
 
     // get local ip addresses
     char szIPAddress[128];
@@ -278,6 +255,12 @@ int CreateServer(int iConnectionType)
     }
     else
         printf("Connection Type : Unicast\n");
+    
+    if (log_stepvr.is_open()) {
+        log_stepvr << "Command Socket  : " << szCommandIP << ":" << iCommandPort << "\n";
+        log_stepvr << "Data Socket     : " << szDataIP << ":" << iDataPort << "\n";
+        log_stepvr << "Multicast Group : " << szMulticastGroup << ":" << iMulticastPort << "\n";
+    }
 
     return ErrorCode_OK;
 }
@@ -377,15 +360,15 @@ void BuildDescription(sDataDescriptions* pDescription)
 
 #if STREAM_RBS
     // Rigid Body Description
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < 10; i++)
     {
         sRigidBodyDescription* pRigidBodyDescription = new sRigidBodyDescription();
         sprintf(pRigidBodyDescription->szName, "RigidBody %d", i);
         pRigidBodyDescription->ID = i;
-        pRigidBodyDescription->offsetx = 1.0f;
-        pRigidBodyDescription->offsety = 2.0f;
-        pRigidBodyDescription->offsetz = 3.0f;
-        pRigidBodyDescription->parentID = 2;
+        pRigidBodyDescription->offsetx = 0.0f;
+        pRigidBodyDescription->offsety = 0.0f;
+        pRigidBodyDescription->offsetz = 0.0f;
+        pRigidBodyDescription->parentID = g_parentId;
         pDescription->arrDataDescriptions[index].type = Descriptor_RigidBody;
         pDescription->arrDataDescriptions[index].Data.RigidBodyDescription = pRigidBodyDescription;
         pDescription->nDataDescriptions++;
@@ -450,32 +433,6 @@ void FreeDescription(sDataDescriptions* pDescription)
 // Build frame of MocapData
 void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData* pOutFrame)// , char* outString)
 {
-    StepVR::SingleNode::NodeID nodeID = StepVR::SingleNode::NodeID_Head;
-
-    StepVR::Frame frame = manager->GetFrame();
-    StepVR::SingleNode positionframe = frame.GetSingleNode();
-    StepVR::Vector3f v3 = positionframe.GetPosition(nodeID);
-    StepVR::Vector4f v4 = positionframe.GetQuaternion(nodeID);
-
-    printf("F%d, node:%d, pos:[%.4f %.4f %.4f], ori:[%.3f %.3f %.3f %.3f] \n", g_lCurrentFrame, nodeID, v3.x, v3.y, v3.z, v4.x, v4.y, v4.z, v4.w);
-
-    char outString[128];
-    sprintf(outString, "F%d, node:%d, pos:[%.4f %.4f %.4f], ori:[%.3f %.3f %.3f %.3f] \n", g_lCurrentFrame, nodeID, v3.x, v3.y, v3.z, v4.x, v4.y, v4.z, v4.w);
-    std::fstream outf("C:\\StepVR\\stepvr_service_log.txt", std::ios::app);
-    outf << outString;
-    outf.close();
-
-    rd_p[0] = v3.x;
-    rd_p[1] = v3.y;
-    rd_p[2] = v3.z;
-
-    rd_o[0] = v4.x;
-    rd_o[1] = v4.y;
-    rd_o[2] = v4.z;
-    rd_o[3] = v4.w;
-    //Sleep(10);
-    //}
-
     //----------------------------------
     if (!pModels)
     {
@@ -488,14 +445,10 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
     pOutFrame->fLatency = (float)GetTickCount();
     pOutFrame->nOtherMarkers = 0;
     pOutFrame->nMarkerSets = 0;
-    pOutFrame->nRigidBodies = 1;
+    pOutFrame->nRigidBodies = 0;
     pOutFrame->nLabeledMarkers = 0;
-
-    int num01 = pModels->nDataDescriptions;
-    //printf("num01 :%d\n", num01);    //20
-    //for(int i=0; i < pModels->nDataDescriptions; i++)
-    int i = 0;
-    if (i == 0)
+    
+    for (int i = 0; i < pModels->nDataDescriptions; i++)
     {
 #if STREAM_MARKERS
         // MarkerSet data
@@ -523,6 +476,7 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
         }
 #endif
 
+
 #if STREAM_RBS
         // RigidBody data
         int anchor = pModels->arrDataDescriptions[i + 1].type;
@@ -530,51 +484,62 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
         if (pModels->arrDataDescriptions[i + 1].type == Descriptor_RigidBody)
         {
             sRigidBodyDescription* pMS = pModels->arrDataDescriptions[i].Data.RigidBodyDescription;
-            //int index = pOutFrame->nRigidBodies;
-            int index = 0;
-            //printf("index: %d\n", index);
+            int index = pOutFrame->nRigidBodies;
             sRigidBodyData* pRB = &pOutFrame->RigidBodies[index];
 
-            //pRB->ID = pMS->ID;
-            int test_id = 1;
-            pRB->ID = test_id;
-            //printf("ID:%d\n", pRB->ID);
-            /*
-            double rads = (double)counter * 3.14159265358979 / 180.0f;
-            pRB->x = (float) sin(rads);
-            pRB->y = (float) cos(rads);
-            pRB->z = (float) tan(rads);
-            */
-            pRB->x = rd_p[0];
-            pRB->y = rd_p[1];
-            pRB->z = rd_p[2];
-            /*
-            EulerAngles ea;
-            ea.x = (float) sin(rads);
-            ea.y = (float) cos(rads);
-            ea.z = (float) tan(rads);
-            ea.w = 0.0f;
-            Quat q = Eul_ToQuat(ea);
-            pRB->qx = q.x;
-            pRB->qy = q.y;
-            pRB->qz = q.z;
-            pRB->qw = q.w;
-            */
-            pRB->qx = rd_o[0];
-            pRB->qy = rd_o[1];
-            pRB->qz = rd_o[2];
-            pRB->qw = rd_o[3];
+            pRB->ID = pMS->ID;
+            unsigned char node_id = pRB->ID;
+            
+            StepVR::Frame frame = manager->GetFrame();
+            StepVR::SingleNode positionframe = frame.GetSingleNode();
+            StepVR::Vector3f v3 = positionframe.GetPosition(node_id);
+            StepVR::Vector4f v4 = positionframe.GetQuaternion(node_id);
 
-            pRB->nMarkers = 1;
+            //std::fstream outf("C:\\StepVR\\stepvr_service.txt", std::ios::app);
+            //outf << "node_id(" << int(node_id) << ")";
+            //outf << "v3.x(" << v3.x << ")\n";
+            //outf.close();
+
+            if (v3.x == 0 && v3.y == 0 && v3.z == 0 && v4.x == 0 && v4.y == 0 && v4.z == 0 && v4.w == 1.0)
+            {
+                //continue;
+            }
+            else {
+                if (g_bVision)
+                    printf("F%d, node:%d, pos:[%.4f %.4f %.4f], ori:[%.3f %.3f %.3f %.3f] \n", counter3++, node_id, v3.x, v3.y, v3.z, v4.x, v4.y, v4.z, v4.w);
+            }
+
+            //printf("ID:%d\n", pRB->ID);
+            //double rads = (double)counter * 3.14159265358979 / 180.0f;
+            //pRB->x = (float) sin(rads);
+            //pRB->y = (float) cos(rads);
+            //pRB->z = (float) tan(rads);
+            pRB->x = v3.x;
+            pRB->y = v3.y;
+            pRB->z = v3.z;
+
+            //EulerAngles ea;
+            //ea.x = (float) sin(rads);
+            //ea.y = (float) cos(rads);
+            //ea.z = (float) tan(rads);
+            //ea.w = 0.0f;
+            //Quat q = Eul_ToQuat(ea);
+            //pRB->qx = q.x;
+            //pRB->qy = q.y;
+            //pRB->qz = q.z;
+            //pRB->qw = q.w;
+            pRB->qx = v4.x;
+            pRB->qy = v4.y;
+            pRB->qz = v4.z;
+            pRB->qw = v4.w;
+
+            // there is no Marker in stepvr
+            pRB->nMarkers = 0;
             pRB->Markers = new MarkerData[pRB->nMarkers];
             pRB->MarkerIDs = new int[pRB->nMarkers];
             pRB->MarkerSizes = new float[pRB->nMarkers];
             pRB->MeanError = 0.0f;
-            int num02 = pRB->nMarkers;
-            //printf("num02:%d\n", num02);
-            //for(int iMarker=0; iMarker < pRB->nMarkers; iMarker++)
-            int iMarker = 0;
-            if (iMarker == 0)
+            for (int iMarker = 0; iMarker < pRB->nMarkers; iMarker++)
             {
                 pRB->Markers[iMarker][0] = iMarker + 0.1f;		// x
                 pRB->Markers[iMarker][1] = iMarker + 0.2f;		// y
@@ -582,10 +547,14 @@ void BuildFrame(long FrameNumber, sDataDescriptions* pModels, sFrameOfMocapData*
                 pRB->MarkerIDs[iMarker] = iMarker + 200;
                 pRB->MarkerSizes[iMarker] = 77.0f;
             }
+
             pOutFrame->nRigidBodies++;
             counter++;
-            //test_id++;
-        }
+
+            //std::fstream outf("C:\\StepVR\\stepvr_service.txt", std::ios::app);
+            //outf << "nRigidBodies(" << int(pOutFrame->nRigidBodies) << ")" << "counter(" << counter << ")\n";
+            //outf.close();
+    }
 #endif
 
 #if STREAM_SKELETONS
@@ -698,11 +667,11 @@ void resetServer()
         printf("Error re-initting server.\n");
 }
 
-//// MessageHandler receives NatNet error mesages
-//void __cdecl MessageHandler(int msgType, char* msg)
-//{
-//    printf("\n%s\n", msg);
-//}
+// MessageHandler receives NatNet error mesages
+void __cdecl MessageHandler(int msgType, char* msg)
+{
+    printf("\n%s\n", msg);
+}
 
 // higher resolution sleep than standard.
 int HiResSleep(int msecs)

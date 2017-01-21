@@ -6,6 +6,6 @@
     <ClCompile Include="ServiceBase.cpp" />
     <ClCompile Include="ServiceInstaller.cpp" />
     <ClCompile Include="StepVR_Service.cpp" />
-    <ClCompile Include="StepVRDataSource.cpp" />
+    <ClCompile Include="StepVR_Server.cpp" />
   </ItemGroup>
 </Project>

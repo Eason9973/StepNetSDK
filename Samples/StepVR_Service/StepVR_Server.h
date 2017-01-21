@@ -47,6 +47,6 @@ the NatNet server.
 #define STREAM_SKELETONS 0
 #define STREAM_LABELED_MARKERS 0
 
-int StepVRDataSource_Start();
-int StepVRDataSource_Stop();
-void StepVRDataSource_Update();
+int StepVR_Server_Start();
+int StepVR_Server_Stop();
+void StepVR_Server_Update();

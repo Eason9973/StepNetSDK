@@ -20,10 +20,11 @@
 #pragma region Includes
 #include "SampleService.h"
 #include "ThreadPool.h"
-#include "StepVRDataSource.h"
+#include "StepVR_Server.h"
 #include <fstream>
 #pragma endregion
 
+std::fstream log_service;
 
 CSampleService::CSampleService(PWSTR pszServiceName, 
                                BOOL fCanStop, 
@@ -83,12 +84,13 @@ void CSampleService::OnStart(DWORD dwArgc, LPWSTR *lpszArgv)
     // Log a service start message to the Application log.
     WriteEventLogEntry(L"StepVRService in OnStart", 
         EVENTLOG_INFORMATION_TYPE);
+    
+    log_service.open("C:\\StepVR\\stepvr_service.txt", std::ios::app);
+    log_service << "\r\n\r\n";
 
-    //std::fstream outf("C:\\StepVR\\stepvr_service.txt", std::ios::app);
-    //outf << "StepVRDataSource_Start()" << "\n";
-    //outf.close();
+    log_service << "StepVR_Server_Start()" << "\n";
 
-    StepVRDataSource_Start();
+    StepVR_Server_Start();
 
     // Queue the main service function for execution in a worker thread.
     CThreadPool::QueueUserWorkItem(&CSampleService::ServiceWorkerThread, this);
@@ -107,8 +109,7 @@ void CSampleService::ServiceWorkerThread(void)
     while (!m_fStopping)
     {
         // Perform main service function here...
-        StepVRDataSource_Update();
-
+        StepVR_Server_Update();
         //PWSTR localAppData;
         //wcstombs(log, localAppData, 100);
         //WriteEventLogEntry("", EVENTLOG_ERROR_TYPE);
@@ -138,7 +139,13 @@ void CSampleService::OnStop()
     WriteEventLogEntry(L"StepVRService in OnStop", 
         EVENTLOG_INFORMATION_TYPE);
     
-    StepVRDataSource_Stop();
+    StepVR_Server_Stop();
+
+    log_service << "StepVR_Server_Stop()" << "\n";
+
+    if (log_service.is_open()) {
+        log_service.close();
+    }
 
     // Indicate that the service is stopping and wait for the finish of the 
     // main service function (ServiceWorkerThread).
@@ -148,4 +155,3 @@ void CSampleService::OnStop()
         throw GetLastError();
     }
 }
-
