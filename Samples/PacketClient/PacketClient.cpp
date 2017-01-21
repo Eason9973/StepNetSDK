@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2014 NaturalPoint, Inc. All Rights Reserved.
+// Copyright ?2014 NaturalPoint, Inc. All Rights Reserved.
 // 
 // This software is provided by the copyright holders and contributors "as is" and
 // any express or implied warranties, including, but not limited to, the implied

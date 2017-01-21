@@ -491,7 +491,11 @@ namespace WinFormTestApp
                         bool tracked = rb.Tracked;
                         if (!tracked)
                         {
-                            OutputMessage("RigidBody not tracked in this frame.");
+                            //OutputMessage("RigidBody not tracked in this frame.");
+                        }
+                        else
+                        {
+                            OutputMessage("RigidBody tracked in this frame.");
                         }
 
                         dataGridView1.Rows[rowIndex].Cells[1].Value = rb.x * m_ServerToMillimeters;

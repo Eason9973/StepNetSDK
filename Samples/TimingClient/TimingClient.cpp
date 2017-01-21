@@ -1,5 +1,5 @@
 //=============================================================================
-// Copyright © 2014 NaturalPoint, Inc. All Rights Reserved.
+// Copyright ?2014 NaturalPoint, Inc. All Rights Reserved.
 // 
 // This software is provided by the copyright holders and contributors "as is" and
 // any express or implied warranties, including, but not limited to, the implied
@@ -48,7 +48,7 @@ int CreateClient(int iConnectionType);
 
 int initializeLastFrame = 0;
 double lastfTimeStamp = 0.0;
-double fRate = 0.0;
+double fRate = 240.0;       // stepvr standard frame rate
 double expectedFramePeriod = 0.0;
 double deltafTimeStamp = 0.0;
 int goodfTimeStamp = 0;
@@ -111,13 +111,13 @@ int _tmain(int argc, _TCHAR* argv[])
 	void* pResult;
 	int ret = 0;
 	int nBytes = 0;
-	ret = theClient->SendMessageAndWait("FrameRate", &pResult, &nBytes);
- 	if (ret == ErrorCode_OK)
-	{
-		fRate = *((float*)pResult);
+	//ret = theClient->SendMessageAndWait("FrameRate", &pResult, &nBytes);
+ 	//if (ret == ErrorCode_OK)
+	//{
+	//	fRate = *((float*)pResult);
 		if (fRate != 0.0f)
 			expectedFramePeriod = (1/fRate);
-	}
+	//}
 	if (expectedFramePeriod == 0.0)
 		printf("Error establishing Frame Rate.");
 
@@ -244,11 +244,11 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
         timer.Start();
 
         // Motive timing info
-		deltafTimeStamp = data->fTimestamp - lastfTimeStamp;
-		printf("Frame Rate:%3.2lf  ", fRate);
-		printf("Time Stamp:%3.6lf  ", data->fTimestamp);
-		printf("Expected Period:%3.6lf  ", expectedFramePeriod);
-		printf("Period:%3.6lf ", deltafTimeStamp);
+        deltafTimeStamp = data->fTimestamp - lastfTimeStamp;
+        printf("Time Stamp:%3.3lf  ", data->fTimestamp);
+		printf("Frame Rate:%3.3lf  ", fRate);
+		printf("Expected Period:%3.3lf  ", expectedFramePeriod);
+		printf("Period:%3.3lf ", deltafTimeStamp);
 		lastfTimeStamp = data->fTimestamp;
 		totalfTimeStamp += 1;
 		
@@ -284,16 +284,16 @@ void __cdecl DataHandler(sFrameOfMocapData* data, void* pUserData)
 
 void _WriteHeader(FILE* fp)
 {
-    fprintf(fp ,"FrameID\tTimestamp(s)\tDelta(ms)\tLocalDelta(ms)\tIrregular?\n");
+    fprintf(fp ,"FrameID\tTimestamp(ms)\tDelta(ms)\tLocalDelta(ms)\tIrregular?\n");
 }
 
 void _WriteFrame(FILE* fp, sFrameOfMocapData* data)
 {
-    fprintf(fp ,"%d\t%3.6lf\t%3.6lf\t%3.6lf\t",
+    fprintf(fp ,"%d\t%3.3lf\t%3.3lf\t\t%3.6lf\t",
                 data->iFrame,
                 data->fTimestamp,
-                deltafTimeStamp*1000.0f,
-                localDelta*1000.0f );
+                deltafTimeStamp,
+                localDelta);
 
     // indicate frame irregularity
 	if (deltafTimeStamp <= (expectedFramePeriod)*(1.0f-tolerance) || deltafTimeStamp >= (expectedFramePeriod)*(1.0f+tolerance))

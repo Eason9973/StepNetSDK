@@ -545,10 +545,15 @@ void RenderOGLScene()
 
         if (showText)
         {
-            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-            std::string rigidBodyName = mapIDToName.at(rigidBodies.ID(i));
-            glPrinter.Print(textX, textY, "%s (Pitch: %3.1f, Yaw: %3.1f, Roll: %3.1f)", rigidBodyName.c_str(), ea.x, ea.y, ea.z);
-            textY -= 100.0f;
+            if (x == 0 && y == 0 && z == 0 & qx == 0 && qy == 0 && qz == 0 && qw == 1) {
+
+            }
+            else {
+                glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+                std::string rigidBodyName = mapIDToName.at(rigidBodies.ID(i));
+                glPrinter.Print(textX, textY, "%s pos:(%.3f, %.3f, %.3f), rot:(%3.1f, %3.1f, %3.1f), qua:(%.4f, %.4f, %.4f, %.4f)", rigidBodyName.c_str(), x / 1000, y / 1000, z / 1000, ea.x, ea.y, ea.z, qx, qy, qz, qw);
+                textY -= 100.0f;
+            }
         }
 
     }
